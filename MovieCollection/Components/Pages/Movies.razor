@@ -1,0 +1,24 @@
+﻿@using MovieCollectionApplication
+@using MovieCollectionEntities
+@rendermode InteractiveServer
+
+@page "/movies"
+
+<h3>Movies</h3>
+
+<EditForm Model="@Movie" OnSubmit="SubmitMovie" FormName="MovieForm">
+    <InputText @bind-Value="@Movie.Title" />
+    <InputText @bind-Value="@Movie.Genre" />
+    <InputText @bind-Value="@Movie.Description" />
+    <button type="submit">Add Movie</button>
+</EditForm>
+
+@if (MovieList is not null)
+{
+    <ul>
+    @foreach (var movie in MovieList)
+    {
+        <li>@movie.Title</li>
+    }
+    </ul>
+}

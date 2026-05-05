@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="MovieCollection/MovieCollection.csproj" />
+  <Project Path="MovieCollectionAPI/MovieCollectionAPI.csproj" />
+  <Project Path="MovieCollectionApplication/MovieCollectionApplication.csproj" Id="65d626cd-cb22-4c84-818f-7cf00139c38d" />
+  <Project Path="MovieCollectionEntities/MovieCollectionEntities.csproj" />
+  <Project Path="MovieCollectionInfrastructure/MovieCollectionInfrastructure.csproj" />
+</Solution>
