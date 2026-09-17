@@ -17,7 +17,8 @@ namespace MovieCollection.Components.Pages
         {
             base.OnInitialized();
             await GetMovie("Terminator");
-            MovieList = await GetMovies();
+            await GetMovies();
+            StateHasChanged();
         }
 
         public async Task<MovieEntity> GetMovie(string title)
@@ -28,13 +29,13 @@ namespace MovieCollection.Components.Pages
 
         public async Task<List<MovieEntity>> GetMovies()
         {
-            var movies = await MovieService.GetMoviesAsync();
-            return movies;
+            return MovieList = await MovieService.GetMoviesAsync();
         }
 
         public async Task SubmitMovie()
         {
             await MovieService.AddMovieAsync(Movie);
+            await GetMovies();
         }
 
     }
