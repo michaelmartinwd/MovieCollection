@@ -5,9 +5,24 @@ Things to add to project:
 4. Add authentication and security?
 5. Explain in detail in this readme about how this is being created and with what.
 
-Name of app
-Brief explanation of what this app is
+Name of app:
+Movie Collection
+
+Brief explanation of what this app is:
+Blazor web application using entity framework, Docker, Neon, and Render for deployment.
+
 major coding pieces used (.NET CORE, React, Azure, etc)
+- Blazor
+- Bootstrap
+- PostgresSQL
+- Entity Framework
+- Docker
+- GitHub
+- Neon
+- Render
+- TMDB Movie API for searching
+
+  
 list the versions of each below such as .net 10 or react 19
 
 a more detailed description of the app here
