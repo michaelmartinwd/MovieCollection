@@ -27,7 +27,7 @@ list the versions of each below such as .net 10 or react 19
 
 a more detailed description of the app here
 
-links to a live demo?
+DEMO: https://moviecollection-ibp3.onrender.com/movies 
 
 Include a table of contents
 
