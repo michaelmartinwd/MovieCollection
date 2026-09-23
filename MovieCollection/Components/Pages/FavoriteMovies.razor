@@ -8,7 +8,7 @@
 
 <h1>My Favorite Movies</h1>
 
-<div class="album py-5 bg-light">
+<div class="album py-5">
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
             @if (FavoriteMovies is not null)
@@ -16,7 +16,7 @@
                 @foreach (var movie in FavoriteMovies)
                 {
                     <div class="col-12">
-                        <div class="card w-100 shadow-sm">
+                        <div class="card w-100">
                             @movie.Title
                             <div class="card-body">
                                 <p class="card-text">@movie.Overview</p>

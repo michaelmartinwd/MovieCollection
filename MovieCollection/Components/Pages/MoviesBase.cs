@@ -10,8 +10,8 @@ namespace MovieCollection.Components.Pages
     {
         [Inject]
         private IMovieCollectionService MovieService { get; set; } = null!;
-        [Inject]
-        private IUserService UserService { get; set; } = null!;
+        //[Inject]
+        //private IUserService UserService { get; set; } = null!;
         [Inject]
         private MovieLibraryAPI MovieLibraryAPI { get; set; } = null!;
 
@@ -21,22 +21,17 @@ namespace MovieCollection.Components.Pages
         public List<MovieSearchEntity> MovieSearchList { get; set; } = new();
         public MovieSearchEntity MovieSearch { get; set; } = new();
 
-        public ICollection<MovieEntity>? FavoriteMovies { get; set; }
+        //public ICollection<MovieEntity>? FavoriteMovies { get; set; }
 
         protected async override void OnInitialized()
         {
             base.OnInitialized();
-            var user = await UserService.GetUserAsync("TestUser");
-            FavoriteMovies = user!.FavoriteMovies;
-
-            
-            //await GetMovies();
+            //var user = await UserService.GetUserAsync("TestUser");
+            //FavoriteMovies = user!.FavoriteMovies;
             await SearchMovies();
             StateHasChanged();
         }
 
-        // after a movie has been marked as favorite, add that movie to the db as a new record
-        // and then refresh the list of movies to show the new favorite movie
         // change the UI for the button to show that the movie has been added to favorites (rename button to "Added to Favorites" and disable the button)
         // show another button to remove from favorites, which will remove the movie from the db and refresh the list of movies to show that the movie has been removed from favorites
         // when searching for movies, if the movie is already in the db, show a message that the movie is already in favorites and disable the button to add to favorites
