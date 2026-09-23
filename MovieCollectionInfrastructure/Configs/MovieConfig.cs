@@ -14,11 +14,11 @@ namespace MovieCollectionInfrastructure.Configs
             builder.HasKey(x => x.Id);
             builder.Property(e => e.Id).ValueGeneratedNever();
 
+            builder.Property("ExternalId");
             builder.Property("Title");
-            builder.Property("Description");
-            builder.Property("Genre");
+            builder.Property("Overview");
+            builder.Property("ReleaseDate");
             builder.Property("DateAdded");
-            builder.Property("DateUpdated");
         }
     }
 }

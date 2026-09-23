@@ -7,16 +7,30 @@ namespace MovieCollectionAPI
 {
     public class MovieLibraryAPI
     {
+        private readonly IConfiguration _configuration;
+
+        public MovieLibraryAPI(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task<List<SearchMovie>> SearchMoviesAsync(string query, int page = 1)
         {
-            var client = new TMDbClient("YOUR_API_KEY");
+            //var apikey = Environment.GetEnvironmentVariable("TMDB_API_KEY");
+            var apikey = _configuration.GetConnectionString("TMDB_API_KEY");
+            var client = new TMDbClient(apikey!);
 
             var searchResults = await client.SearchMovieAsync(query, page);
 
-            foreach (var result in searchResults.Results)
-                Console.WriteLine(result.Title);
+            if (searchResults?.Results != null)
+            {
+                foreach (var result in searchResults.Results)
+                    Console.WriteLine(result.Title);
 
-            return searchResults.Results;
+                return searchResults.Results;
+            }
+
+            return new List<SearchMovie>();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace MovieCollectionInfrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -30,16 +30,15 @@ namespace MovieCollectionInfrastructure.Migrations
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Overview")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -48,6 +47,50 @@ namespace MovieCollectionInfrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movies", (string)null);
+                });
+
+            modelBuilder.Entity("MovieCollectionEntities.UserEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("UserFavoriteMovies", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("UserFavoriteMovies", (string)null);
+                });
+
+            modelBuilder.Entity("UserFavoriteMovies", b =>
+                {
+                    b.HasOne("MovieCollectionEntities.MovieEntity", null)
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieCollectionEntities.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

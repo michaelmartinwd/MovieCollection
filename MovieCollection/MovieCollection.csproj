@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MovieCollectionAPI\MovieCollectionAPI.csproj" />
     <ProjectReference Include="..\MovieCollectionApplication\MovieCollectionApplication.csproj" />
     <ProjectReference Include="..\MovieCollectionEntities\MovieCollectionEntities.csproj" />
     <ProjectReference Include="..\MovieCollectionInfrastructure\MovieCollectionInfrastructure.csproj" />

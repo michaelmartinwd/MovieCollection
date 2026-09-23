@@ -12,8 +12,8 @@ namespace MovieCollectionInfrastructure
         {
         }
 
-        //public DbSet<MovieEntity> Movies => Set<MovieEntity>();
         public DbSet<MovieEntity> Movies { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

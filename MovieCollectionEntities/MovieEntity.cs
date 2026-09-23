@@ -7,32 +7,27 @@ namespace MovieCollectionEntities
     public class MovieEntity
     {
         public Guid Id { get; set; }
+        public int ExternalId { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Genre { get; set; } = string.Empty;
+        public string Overview { get; set; } = string.Empty;
+        public DateTime ReleaseDate { get; set; }
         public DateTime DateAdded { get; set;  }
-        public DateTime DateUpdated { get; set;  }
+
+        public ICollection<UserEntity> Users { get; set; } = new List<UserEntity>();
 
         public MovieEntity()
         {
         }
 
-        public MovieEntity(string title, string description, string genre)
+        public MovieEntity(int externalId, string title, string overview, DateTime releaseDate)
         {
             Id = Guid.NewGuid();
+            ExternalId = externalId;
             Title = title;
-            Description = description;
-            Genre = genre;
+            Overview = overview;
+            ReleaseDate = releaseDate;
             DateAdded = DateTime.UtcNow;
-            DateUpdated = DateTime.UtcNow;
         }
 
-        public void UpdateMovie(string title, string description, string genre)
-        {
-            Title = title;
-            Description = description;
-            Genre = genre;
-            DateUpdated = DateTime.UtcNow;
-        }
     }
 }

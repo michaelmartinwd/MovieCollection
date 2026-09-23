@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@inherits FavoriteMoviesBase
+@rendermode InteractiveServer
+
+@page "/favoritemovies"
+
+<div class="container">
+
+<h1>My Favorite Movies</h1>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
+            @if (FavoriteMovies is not null)
+            {
+                @foreach (var movie in FavoriteMovies)
+                {
+                    <div class="col-12">
+                        <div class="card w-100 shadow-sm">
+                            @movie.Title
+                            <div class="card-body">
+                                <p class="card-text">@movie.Overview</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+
+                                    </div>
+                                    <small class="text-muted">@movie.ReleaseDate.ToShortDateString()</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+
+       
+        </div>
+    </div>
+</div>

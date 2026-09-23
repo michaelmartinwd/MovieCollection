@@ -4,6 +4,8 @@ using MovieCollectionApplication.Interfaces;
 using MovieCollectionApplication.Services;
 using MovieCollectionInfrastructure;
 using MovieCollectionInfrastructure.Repository;
+using MovieCollectionAPI;
+using MovieCollection.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +21,13 @@ builder.Services.AddDbContextFactory<MovieCollectionDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddTransient<IMovieCollectionService, MovieCollectionService>();
 builder.Services.AddTransient<MovieCollectionRepository, MovieCollectionRepository>();
+builder.Services.AddTransient<MovieLibraryAPI, MovieLibraryAPI>();
+
+builder.Services.AddTransient<IMovieCollectionService, MovieCollectionService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<Seed>();
 
 var app = builder.Build();
 
@@ -28,7 +35,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<MovieCollectionDbContext>();
     dbContext.Database.Migrate();
-    //await SeedData.Initialize(scope);
+    await Seed.Initialize(scope);
 }
 
 // Configure the HTTP request pipeline.
