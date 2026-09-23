@@ -1,26 +1,27 @@
 Things to add to project:
-1. Finish up with the setup for adding movies, updating movies, and getting movies
-2. add something with Claude AI to integrate some sort of AI search feature to look for movies
-3. Add an API that also does something to bring in data from an external source, maybe a movie reference list or something
-4. Add authentication and security?
-5. Explain in detail in this readme about how this is being created and with what.
+1. add something with Claude AI to integrate some sort of AI search feature to look for movies
+2. Add authentication and security?
 
-Name of app
-Brief explanation of what this app is
-major coding pieces used (.NET CORE, React, Azure, etc)
-list the versions of each below such as .net 10 or react 19
+Name of app:
+Movie Collection
+
+Brief explanation of what this app is:
+Blazor web application using entity framework, Docker, Neon, and Render.
+
+Made with:
+- Blazor
+- Bootstrap
+- Entity Framework
+- Docker (Deploying)
+- Neon (PostgresSQL)
+- Render (Hosting)
+- TMDB Movie API for searching
 
 a more detailed description of the app here
 
-links to a live demo?
-
-Include a table of contents
-
-features section which can include: Main points of what this app is doing like list out authentication type, responsive design, searching for movies, etc
+DEMO: https://moviecollection-ibp3.onrender.com/movies 
 
 add screenshots
-
-maybe explain architecture and include a whimsical pic showing things
 
 Tech Stack section, more detailed list of everything being used, split out in frontend and backend sections
 
