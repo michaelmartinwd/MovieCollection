@@ -26,15 +26,13 @@
 
         @if (MovieSearchList is not null && MovieSearchList.Count > 0)
         {
-            
-        
-
+           
             <nav>
-                <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center flex-wrap">
                     <li class="page-item">
                         <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
                     </li>
-                       @for (int i = 1; i <= TotalPages; i++)
+                      @for (int i = StartPage; i <= EndPage; i++)
         {
             int pageNumber = i;
 
@@ -75,11 +73,11 @@
             }
           
             <nav>
-                <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center flex-wrap">
                     <li class="page-item">
                         <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
                     </li>
-                       @for (int i = 1; i <= TotalPages; i++)
+                       @for (int i = StartPage; i <= EndPage; i++)
         {
             int pageNumber = i;
 

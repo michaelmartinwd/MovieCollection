@@ -21,6 +21,8 @@ namespace MovieCollection.Components.Pages
         public int CurrentPage = 1;
         public int TotalPages;
         private string SearchTitle = "";
+        public int StartPage => Math.Max(1, CurrentPage - 2);
+        public int EndPage => Math.Min(TotalPages, CurrentPage + 2);
 
         protected async override void OnInitialized()
         {
