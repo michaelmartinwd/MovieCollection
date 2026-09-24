@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MovieCollectionApplication.Interfaces;
+using MovieCollectionApplication.Services;
 using MovieCollectionEntities;
 
 namespace MovieCollection.Components.Pages
 {
     public partial class FavoriteMoviesBase : ComponentBase
     {
-
+        [Inject]
+        private ToastService ToastService { get; set; } = null!;
         [Inject]
         private IUserService UserService { get; set; } = null!;
         [Inject]
@@ -14,12 +16,34 @@ namespace MovieCollection.Components.Pages
 
         public ICollection<MovieEntity>? FavoriteMovies { get; set; }
 
+        public bool showToast;
+        public string toastMessage = "";
+
         protected async override void OnInitialized()
         {
             base.OnInitialized();
+            ToastService.OnShow += ShowToast;
             var user = await UserService.GetUserAsync("TestUser");
             FavoriteMovies = user!.FavoriteMovies;
             StateHasChanged();
+        }
+
+        public void ShowToast(string message)
+        {
+            toastMessage = message;
+            showToast = true;
+
+            InvokeAsync(StateHasChanged);
+        }
+
+        public void HideToast()
+        {
+            showToast = false;
+        }
+
+        public void Dispose()
+        {
+            ToastService.OnShow -= ShowToast;
         }
 
         public async Task RemoveFromFavorites(MovieEntity movie)

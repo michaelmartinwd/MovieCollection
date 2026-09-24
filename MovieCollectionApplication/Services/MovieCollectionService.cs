@@ -7,10 +7,12 @@ namespace MovieCollectionApplication.Services
     public class MovieCollectionService : IMovieCollectionService
     {
         private readonly MovieCollectionRepository _repo;
+        private readonly ToastService _toastService;
 
-        public MovieCollectionService(MovieCollectionRepository repo)
+        public MovieCollectionService(MovieCollectionRepository repo, ToastService toastService)
         {
             _repo = repo;
+            _toastService = toastService;
         }
 
         public async Task AddMovieAsync(MovieEntity movie)
@@ -38,11 +40,13 @@ namespace MovieCollectionApplication.Services
         public async Task AddFavoriteMovieAsync(string username, MovieEntity movie)
         {
             await _repo.AddFavoriteMovieAsync(username, movie);
+            _toastService.Show("Movie added to favorites!");
         }
 
         public async Task RemoveFavoriteMovieAsync(string username, int externalId)
         {
             await _repo.RemoveFavoriteMovieAsync(username, externalId);
+            _toastService.Show("Movie removed from favorites!");
         }
     }
 }

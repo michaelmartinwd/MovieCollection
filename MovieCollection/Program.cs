@@ -28,6 +28,7 @@ builder.Services.AddTransient<IMovieCollectionService, MovieCollectionService>()
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<Seed>();
+builder.Services.AddScoped<ToastService>();
 
 var app = builder.Build();
 

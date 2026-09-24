@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MovieCollectionAPI;
 using MovieCollectionApplication.Interfaces;
+using MovieCollectionApplication.Services;
 using MovieCollectionEntities;
 
 namespace MovieCollection.Components.Pages
 {
     public partial class MoviesBase : ComponentBase
     {
-
+        [Inject]
+        private ToastService ToastService { get; set; } = null!;
         [Inject]
         private IUserService UserService { get; set; } = null!;
         [Inject]
@@ -28,9 +30,13 @@ namespace MovieCollection.Components.Pages
         public int EndPage => Math.Min(TotalPages, CurrentPage + 2);
         public UserEntity CurrentUser { get; set; } = new();
 
+        public bool showToast;
+        public string toastMessage = "";
+
         protected async override void OnInitialized()
         {
             base.OnInitialized();
+            ToastService.OnShow += ShowToast;
             await SearchMovies();
             CurrentUser = await UserService.GetUserAsync("TestUser");
             StateHasChanged();
@@ -41,6 +47,23 @@ namespace MovieCollection.Components.Pages
         // when searching for movies, if the movie is already in the db, show a message that the movie is already in favorites and disable the button to add to favorites
         // check the movie external id against the list of movies in the db to determine if the movie is already in favorites
 
+        public void ShowToast(string message)
+        {
+            toastMessage = message;
+            showToast = true;
+
+            InvokeAsync(StateHasChanged);
+        }
+
+        public void HideToast()
+        {
+            showToast = false;
+        }
+
+        public void Dispose()
+        {
+            ToastService.OnShow -= ShowToast;
+        }
 
         public async Task SearchMovies()
         {
