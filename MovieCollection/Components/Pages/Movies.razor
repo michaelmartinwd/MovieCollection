@@ -6,14 +6,17 @@
 
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
-        <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Movie Collection</h1>
-            <EditForm Model="@MovieSearch" OnValidSubmit="SearchMovies" FormName="MovieSearchForm">
-                <InputText @bind-Value="@MovieSearch.Title" />
+        <div class="col-lg-5 col-md-8 mx-auto">
+            <h1 class="fw-light">Search for Movies</h1>
+         
+             <EditForm Model="@MovieSearch" OnValidSubmit="SearchMovies" FormName="MovieSearchForm">
+                    <div class="input-group">
+                <InputText @bind-Value="@MovieSearch.Title" class="form-control" />
                 <button type="submit" class="btn btn-primary">Search</button>
+                   </div>
             </EditForm>
-
-        </div>
+            </div>
+     
     </div>
 </section>
 
@@ -21,27 +24,80 @@
 
 <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
 
-@foreach(var movie in MovieSearchList)
-{
-  <div class="col-12">
-    <div class="card w-100">
-                <strong>Title: </strong>@movie.Title
-                <div class="card-body">
-                    <p class="card-text"><strong>Overview: </strong>@movie.Overview</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                                <button type="button"
-                                        class="btn btn-primary"
-                                        @onclick="() => AddFavoriteMovieToUser(movie)">
-                                    Add to Favorites
-                                </button>
-                      </div>
-                        <small class="text-muted">Release Date: @movie.ReleaseDate.ToShortDateString()</small>
+        @if (MovieSearchList is not null && MovieSearchList.Count > 0)
+        {
+            
+        
+
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
+                    </li>
+                       @for (int i = 1; i <= TotalPages; i++)
+        {
+            int pageNumber = i;
+
+            <li class="page-item @(CurrentPage == pageNumber ? "active" : "")">
+                <button class="page-link"
+                        @onclick="() => GoToPage(pageNumber)">
+                    @pageNumber
+                </button>
+            </li>
+        }
+                    <li class="page-item">
+                        <button class="page-link" href="#" @onclick="LoadNextPage" disabled="@(CurrentPage >= TotalPages)">Next</button>
+                    </li>
+                </ul>
+            </nav>
+
+   
+            @foreach (var movie in MovieSearchList)
+            {
+                <div class="col-12">
+                    <div class="card w-100">
+                        <strong>Title: </strong>@movie.Title
+                        <div class="card-body">
+                            <p class="card-text"><strong>Overview: </strong>@movie.Overview</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button"
+                                            class="btn btn-primary"
+                                            @onclick="() => AddFavoriteMovieToUser(movie)">
+                                        Add to Favorites
+                                    </button>
+                                </div>
+                                <small class="text-muted">Release Date: @movie.ReleaseDate.ToShortDateString()</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-}
+            }
+          
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
+                    </li>
+                       @for (int i = 1; i <= TotalPages; i++)
+        {
+            int pageNumber = i;
+
+            <li class="page-item @(CurrentPage == pageNumber ? "active" : "")">
+                <button class="page-link"
+                        @onclick="() => GoToPage(pageNumber)">
+                    @pageNumber
+                </button>
+            </li>
+        }
+                    <li class="page-item">
+                        <button class="page-link" href="#" @onclick="LoadNextPage" disabled="@(CurrentPage >= TotalPages)">Next</button>
+                    </li>
+                </ul>
+            </nav>
+        }
+         
+
 </div>
 
 </div>

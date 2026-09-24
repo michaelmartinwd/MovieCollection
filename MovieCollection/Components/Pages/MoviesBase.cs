@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MovieCollectionAPI;
 using MovieCollectionApplication.Interfaces;
-using MovieCollectionApplication.Services;
 using MovieCollectionEntities;
 
 namespace MovieCollection.Components.Pages
@@ -10,8 +9,6 @@ namespace MovieCollection.Components.Pages
     {
         [Inject]
         private IMovieCollectionService MovieService { get; set; } = null!;
-        //[Inject]
-        //private IUserService UserService { get; set; } = null!;
         [Inject]
         private MovieLibraryAPI MovieLibraryAPI { get; set; } = null!;
 
@@ -21,13 +18,13 @@ namespace MovieCollection.Components.Pages
         public List<MovieSearchEntity> MovieSearchList { get; set; } = new();
         public MovieSearchEntity MovieSearch { get; set; } = new();
 
-        //public ICollection<MovieEntity>? FavoriteMovies { get; set; }
+        public int CurrentPage = 1;
+        public int TotalPages;
+        private string SearchTitle = "";
 
         protected async override void OnInitialized()
         {
             base.OnInitialized();
-            //var user = await UserService.GetUserAsync("TestUser");
-            //FavoriteMovies = user!.FavoriteMovies;
             await SearchMovies();
             StateHasChanged();
         }
@@ -40,26 +37,35 @@ namespace MovieCollection.Components.Pages
 
         public async Task SearchMovies()
         {
-            var searchResults = await MovieLibraryAPI.SearchMoviesAsync(MovieSearch.Title);
+            SearchTitle = MovieSearch.Title ?? "";
+
+            var searchResults = await MovieLibraryAPI.SearchMoviesAsync(SearchTitle, CurrentPage);
 
             MovieSearchList.Clear();
 
             if (searchResults != null)
             {
-                foreach (var result in searchResults)
-                {
-                    var movieSearchEntity = new MovieSearchEntity
-                    {
-                        Title = result.Title!,
-                        ReleaseDate = result.ReleaseDate.HasValue
-                                    ? DateTime.SpecifyKind(result.ReleaseDate.Value, DateTimeKind.Utc)
-                                    : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
-                        Overview = result.Overview!,
-                        Id = result.Id
-                    };
+                TotalPages = searchResults.TotalPages;
+                CurrentPage = searchResults.Page;
 
-                    MovieSearchList.Add(movieSearchEntity);
+                if (searchResults.Results != null && searchResults.Results.Count > 0)
+                {
+                    foreach (var result in searchResults.Results!)
+                    {
+                        var movieSearchEntity = new MovieSearchEntity
+                        {
+                            Title = result.Title!,
+                            ReleaseDate = result.ReleaseDate.HasValue
+                                        ? DateTime.SpecifyKind(result.ReleaseDate.Value, DateTimeKind.Utc)
+                                        : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
+                                Overview = result.Overview!,
+                            Id = result.Id
+                        };
+
+                        MovieSearchList.Add(movieSearchEntity);
+                    }
                 }
+
             }
         }
 
@@ -95,6 +101,31 @@ namespace MovieCollection.Components.Pages
             }
 
 
+        }
+
+        public async Task LoadNextPage()
+        {
+            if (CurrentPage < TotalPages)
+            {
+                CurrentPage++;
+                await SearchMovies();
+            }
+                
+        }
+
+        public async Task LoadPreviousPage()
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                await SearchMovies();
+            }
+        }
+
+        public async Task GoToPage(int page)
+        {
+            CurrentPage = page;
+            await SearchMovies();
         }
 
     }

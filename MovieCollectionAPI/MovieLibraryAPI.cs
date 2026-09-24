@@ -2,6 +2,7 @@
 using TMDbLib.Client;
 using TMDbLib.Objects.General;
 using TMDbLib.Objects.Search;
+using MovieCollectionEntities;
 
 namespace MovieCollectionAPI
 {
@@ -14,9 +15,8 @@ namespace MovieCollectionAPI
             _configuration = configuration;
         }
 
-        public async Task<List<SearchMovie>> SearchMoviesAsync(string query, int page = 1)
+        public async Task<SearchContainer<SearchMovie>> SearchMoviesAsync(string query, int page)
         {
-            //var apikey = Environment.GetEnvironmentVariable("TMDB_API_KEY");
             var apikey = _configuration.GetConnectionString("TMDB_API_KEY");
             var client = new TMDbClient(apikey!);
 
@@ -27,10 +27,10 @@ namespace MovieCollectionAPI
                 foreach (var result in searchResults.Results)
                     Console.WriteLine(result.Title);
 
-                return searchResults.Results;
+                return searchResults;
             }
 
-            return new List<SearchMovie>();
+            return new SearchContainer<SearchMovie>();
         }
     }
 }
