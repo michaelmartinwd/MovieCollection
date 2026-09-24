@@ -25,23 +25,15 @@ namespace MovieCollectionInfrastructure.Repository
             if (user == null)
                 return;
 
-            //var existingMovie = await context.Movies
-            //    .FirstOrDefaultAsync(m => m.ExternalId == movie.ExternalId);
+            var existingMovie = await context.Movies
+                .FirstOrDefaultAsync(m => m.ExternalId == movie.ExternalId);
 
-            //if (existingMovie == null)
-            //{
-            //    existingMovie = new MovieEntity(
-            //        movie.ExternalId,
-            //        movie.Title,
-            //        movie.Overview,
-            //        movie.ReleaseDate);
+            var alreadyFavorite = user.FavoriteMovies
+       .Any(m => m.ExternalId == movie.ExternalId);
 
-            //    context.Movies.Add(existingMovie);
-            //}
-
-            if (!user.FavoriteMovies.Any(m => m.ExternalId == movie.ExternalId))
+            if (!alreadyFavorite)
             {
-                user.FavoriteMovies.Add(movie);
+                user.FavoriteMovies.Add(existingMovie!);
             }
 
             await context.SaveChangesAsync();
@@ -78,9 +70,7 @@ namespace MovieCollectionInfrastructure.Repository
         public async Task UpdateUser(UserEntity user)
         {
             using var context = _repo.CreateDbContext();
-            //context.Users.Update(user);
             await context.SaveChangesAsync();
-           // return user;
         }
 
 
@@ -113,6 +103,28 @@ namespace MovieCollectionInfrastructure.Repository
 
             return await context.Movies
                 .FirstOrDefaultAsync(m => m.ExternalId == externalMovieId);
+        }
+
+        public async Task RemoveFavoriteMovieAsync(string username, int movieId)
+        {
+            await using var context = await _repo.CreateDbContextAsync();
+
+            var user = await context.Users
+                .Include(u => u.FavoriteMovies)
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+                return;
+
+            var movie = user.FavoriteMovies
+                .FirstOrDefault(m => m.ExternalId == movieId);
+
+            if (movie == null)
+                return;
+
+            user.FavoriteMovies.Remove(movie);
+
+            await context.SaveChangesAsync();
         }
     }
 }

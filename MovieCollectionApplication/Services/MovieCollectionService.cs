@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MovieCollectionApplication.Interfaces;
+﻿using MovieCollectionApplication.Interfaces;
 using MovieCollectionEntities;
 using MovieCollectionInfrastructure.Repository;
 
@@ -21,11 +20,6 @@ namespace MovieCollectionApplication.Services
            await _repo.AddMovie(movieEntity);
         }
 
-        public async Task DeleteMovieAsync(Guid id)
-        {
-            // Implementation to delete a movie from the collection
-        }
-
         public async Task<MovieEntity> GetMovieAsync(int externalId)
         {
             return await _repo.GetMovie(externalId);
@@ -44,6 +38,11 @@ namespace MovieCollectionApplication.Services
         public async Task AddFavoriteMovieAsync(string username, MovieEntity movie)
         {
             await _repo.AddFavoriteMovieAsync(username, movie);
+        }
+
+        public async Task RemoveFavoriteMovieAsync(string username, int externalId)
+        {
+            await _repo.RemoveFavoriteMovieAsync(username, externalId);
         }
     }
 }

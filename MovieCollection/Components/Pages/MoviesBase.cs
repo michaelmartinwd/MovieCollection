@@ -7,6 +7,9 @@ namespace MovieCollection.Components.Pages
 {
     public partial class MoviesBase : ComponentBase
     {
+
+        [Inject]
+        private IUserService UserService { get; set; } = null!;
         [Inject]
         private IMovieCollectionService MovieService { get; set; } = null!;
         [Inject]
@@ -23,11 +26,13 @@ namespace MovieCollection.Components.Pages
         private string SearchTitle = "";
         public int StartPage => Math.Max(1, CurrentPage - 2);
         public int EndPage => Math.Min(TotalPages, CurrentPage + 2);
+        public UserEntity CurrentUser { get; set; } = new();
 
         protected async override void OnInitialized()
         {
             base.OnInitialized();
             await SearchMovies();
+            CurrentUser = await UserService.GetUserAsync("TestUser");
             StateHasChanged();
         }
 
@@ -100,6 +105,12 @@ namespace MovieCollection.Components.Pages
                 await MovieService.AddFavoriteMovieAsync(
     "TestUser",
     newMovie);
+            }
+            else if (existingMovie is not null && CurrentUser is not null && CurrentUser.FavoriteMovies.Any(x => x.ExternalId != movie.Id))
+            {
+                await MovieService.AddFavoriteMovieAsync(
+"TestUser",
+existingMovie);
             }
 
 
