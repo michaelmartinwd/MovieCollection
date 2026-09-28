@@ -17,17 +17,15 @@ namespace MovieCollection.Components.Pages
         [Inject]
         private MovieLibraryAPI MovieLibraryAPI { get; set; } = null!;
 
-        public MovieEntity Movie { get; set; } = new();
+        //public MovieEntity Movie { get; set; } = new();
 
-        public List<MovieEntity> MovieList { get; set; } = new();
+        //public List<MovieEntity> MovieList { get; set; } = new();
         public List<MovieSearchEntity> MovieSearchList { get; set; } = new();
         public MovieSearchEntity MovieSearch { get; set; } = new();
 
         public int CurrentPage = 1;
         public int TotalPages;
-        private string SearchTitle = "";
-        public int StartPage => Math.Max(1, CurrentPage - 2);
-        public int EndPage => Math.Min(TotalPages, CurrentPage + 2);
+        public string SearchTitle = "";
         public UserEntity CurrentUser { get; set; } = new();
 
         public bool showToast;
@@ -41,11 +39,6 @@ namespace MovieCollection.Components.Pages
             CurrentUser = await UserService.GetUserAsync("TestUser");
             StateHasChanged();
         }
-
-        // change the UI for the button to show that the movie has been added to favorites (rename button to "Added to Favorites" and disable the button)
-        // show another button to remove from favorites, which will remove the movie from the db and refresh the list of movies to show that the movie has been removed from favorites
-        // when searching for movies, if the movie is already in the db, show a message that the movie is already in favorites and disable the button to add to favorites
-        // check the movie external id against the list of movies in the db to determine if the movie is already in favorites
 
         public void ShowToast(string message)
         {
@@ -99,16 +92,23 @@ namespace MovieCollection.Components.Pages
             }
         }
 
-        public async Task<List<MovieEntity>> GetMovies()
+        public async Task LoadPage(int currentPage)
         {
-            return MovieList = await MovieService.GetMoviesAsync();
+            CurrentPage = currentPage;
+
+            await SearchMovies();
         }
 
-        public async Task SubmitMovie()
-        {
-            await MovieService.AddMovieAsync(Movie);
-            await GetMovies();
-        }
+        //public async Task<List<MovieEntity>> GetMovies()
+        //{
+        //    return MovieList = await MovieService.GetMoviesAsync();
+        //}
+
+        //public async Task SubmitMovie()
+        //{
+        //    await MovieService.AddMovieAsync(Movie);
+        //    await GetMovies();
+        //}
 
         public async Task AddFavoriteMovieToUser(MovieSearchEntity movie)
         {
@@ -137,31 +137,6 @@ existingMovie);
             }
 
 
-        }
-
-        public async Task LoadNextPage()
-        {
-            if (CurrentPage < TotalPages)
-            {
-                CurrentPage++;
-                await SearchMovies();
-            }
-                
-        }
-
-        public async Task LoadPreviousPage()
-        {
-            if (CurrentPage > 1)
-            {
-                CurrentPage--;
-                await SearchMovies();
-            }
-        }
-
-        public async Task GoToPage(int page)
-        {
-            CurrentPage = page;
-            await SearchMovies();
         }
 
     }

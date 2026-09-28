@@ -1,0 +1,61 @@
+﻿<nav>
+    <ul class="pagination justify-content-center flex-wrap">
+        <li class="page-item">
+            <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
+        </li>
+        @for (int i = StartPage; i <= EndPage; i++)
+        {
+            int pageNumber = i;
+
+            <li class="page-item @(CurrentPage == pageNumber ? "active" : "")">
+                <button class="page-link"
+                        @onclick="() => GoToPage(pageNumber)">
+                    @pageNumber
+                </button>
+            </li>
+        }
+        <li class="page-item">
+            <button class="page-link" href="#" @onclick="LoadNextPage" disabled="@(CurrentPage >= TotalPages)">Next</button>
+        </li>
+    </ul>
+</nav>
+
+@code {
+    [Parameter]
+    public int CurrentPage { get; set; } = 1;
+    [Parameter]
+    public int TotalPages { get; set; }
+    [Parameter]
+    public string SearchTitle { get; set; } = string.Empty;
+
+    public int StartPage => Math.Max(1, CurrentPage - 2);
+    public int EndPage => Math.Min(TotalPages, CurrentPage + 2);
+
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+
+    public async Task LoadNextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+            await PageChanged.InvokeAsync(CurrentPage);
+        }
+
+    }
+
+    public async Task LoadPreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+            await PageChanged.InvokeAsync(CurrentPage);
+        }
+    }
+
+    public async Task GoToPage(int page)
+    {
+        CurrentPage = page;
+        await PageChanged.InvokeAsync(CurrentPage);
+    }
+}

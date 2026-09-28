@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
+@using MovieCollection.Components.Shared
 @inherits MoviesBase
 @rendermode InteractiveServer
 
@@ -26,34 +27,14 @@
 
         @if (MovieSearchList is not null && MovieSearchList.Count > 0)
         {
-            <nav>
-                <ul class="pagination justify-content-center flex-wrap">
-                    <li class="page-item">
-                        <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
-                    </li>
-                    @for (int i = StartPage; i <= EndPage; i++)
-                    {
-                        int pageNumber = i;
-
-                        <li class="page-item @(CurrentPage == pageNumber ? "active" : "")">
-                            <button class="page-link"
-                                    @onclick="() => GoToPage(pageNumber)">
-                                @pageNumber
-                            </button>
-                        </li>
-                    }
-                    <li class="page-item">
-                        <button class="page-link" href="#" @onclick="LoadNextPage" disabled="@(CurrentPage >= TotalPages)">Next</button>
-                    </li>
-                </ul>
-            </nav>
+            <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
    
             @foreach (var movie in MovieSearchList)
             {
                 <div class="col-12">
                     <div class="card w-100">
-                        <strong>Title: </strong>@movie.Title
                         <div class="card-body">
+                            <h5>@movie.Title</h5>
                             <p class="card-text"><strong>Overview: </strong>@movie.Overview</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
@@ -70,27 +51,8 @@
                 </div>
             }
 
-            <nav>
-                <ul class="pagination justify-content-center flex-wrap">
-                    <li class="page-item">
-                        <button class="page-link" @onclick="LoadPreviousPage" disabled="@(CurrentPage <= 1)">Previous</button>
-                    </li>
-                    @for (int i = StartPage; i <= EndPage; i++)
-                    {
-                        int pageNumber = i;
+            <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
 
-                        <li class="page-item @(CurrentPage == pageNumber ? "active" : "")">
-                            <button class="page-link"
-                                    @onclick="() => GoToPage(pageNumber)">
-                                @pageNumber
-                            </button>
-                        </li>
-                    }
-                    <li class="page-item">
-                        <button class="page-link" href="#" @onclick="LoadNextPage" disabled="@(CurrentPage >= TotalPages)">Next</button>
-                    </li>
-                </ul>
-            </nav>
         }
          
     </div>
@@ -108,7 +70,7 @@
         </div>
 
         <div class="toast-body">
-            @toastMessage
+            @toastMessage  <a class="btn btn-primary" href="/favoriteMovies">View My Favorite Movies</a>
         </div>
     </div>
 </div>
