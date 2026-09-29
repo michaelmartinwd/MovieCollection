@@ -34,7 +34,7 @@
                 <div class="col-12">
                     <div class="card w-100">
                         <div class="card-body">
-                            <h5>@movie.Title</h5>
+                            <h5>@movie.Title <small class="text-muted">(@movie.ReleaseDate.Year)</small></h5>
                             <p class="card-text"><strong>Overview: </strong>@movie.Overview</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
@@ -44,8 +44,7 @@
                                         Add to Favorites
                                     </button>
                                 </div>
-                                <small class="text-muted">Release Date: @movie.ReleaseDate.ToShortDateString()</small>
-                            </div>
+                          </div>
                         </div>
                     </div>
                 </div>
