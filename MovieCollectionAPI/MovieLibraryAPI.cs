@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using TMDbLib.Client;
+﻿using TMDbLib.Client;
 using TMDbLib.Objects.General;
 using TMDbLib.Objects.Search;
-using MovieCollectionEntities;
 
 namespace MovieCollectionAPI
 {
