@@ -1,12 +1,15 @@
-Things to add to project:
-1. add something with Claude AI to integrate some sort of AI search feature to look for movies
-2. Add authentication and security?
+Name:
+Movie Collection App
 
-Name of app:
-Movie Collection
+App Description:
+Blazor web application using entity framework, Docker, Neon, and Render. 
 
-Brief explanation of what this app is:
-Blazor web application using entity framework, Docker, Neon, and Render.
+Key Features:
+- Ability to search for movies via the TMDB API.
+- View Favorite Movies saved
+- Add/Remove favorites functionality
+- Pagination
+- Toast messaging
 
 Made with:
 - Blazor
@@ -17,20 +20,13 @@ Made with:
 - Render (Hosting)
 - TMDB Movie API for searching
 
-a more detailed description of the app here
+Tech stack:
+- Visual Studio 2026
+- Entity Framework Core 10.0.12
+- TMDbLib 3.0.0
+- Npgsql 10.0.3
+- Bootstrap 5.3.3
 
-DEMO: https://moviecollection-ibp3.onrender.com/movies 
-
-add screenshots
-
-Tech Stack section, more detailed list of everything being used, split out in frontend and backend sections
-
-include list of tools used such as visual studio 2022, git, etc
+DEMO: https://moviecollection-ibp3.onrender.com (please allow up to a minute for loading the site, its on a free account)
 
 explain how this was deployed
-
-include any highlights about the app
-
-include a project structure (just a easy file structure pic)
-
-do i need to include an MIT license?
