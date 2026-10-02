@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Components;
 using MovieCollectionApplication.Interfaces;
 using MovieCollectionApplication.Services;
 using MovieCollectionEntities;
@@ -26,7 +27,7 @@ namespace MovieCollection.Components.Pages
             base.OnInitialized();
             ToastService.OnShow += ShowToast;
             var user = await UserService.GetUserAsync("TestUser");
-            FavoriteMovies = user!.FavoriteMovies;
+            FavoriteMovies = user!.FavoriteMovies.OrderBy(m => m.Title).ToList();
             StateHasChanged();
         }
 

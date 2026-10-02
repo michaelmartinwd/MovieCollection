@@ -89,6 +89,7 @@ namespace MovieCollection.Components.Pages
                     }
                 }
 
+                MovieSearchList.OrderBy(m => m.Title);
             }
         }
 
