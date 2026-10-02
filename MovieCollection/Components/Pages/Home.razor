@@ -3,24 +3,28 @@
 <PageTitle>Home</PageTitle>
 
 <div class="container">
-    <div class="row pt-5">
+    <div class="row pt-5 justify-content-center">
         <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
             <div class="card">
                 <i class="bi bi-search" style="font-size: 5rem; margin: 0 auto;"></i>
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h5 class="card-title">Search for Movies</h5>
                     <p class="card-text">Find movies from accessing the TMDB API and favorite them!</p>
-                    <a href="/movies" class="btn btn-primary">Search Movies</a>
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                         <a href="/movies" class="btn btn-primary text-center">Search Movies</a>
+                    </div>                  
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-            <div class="card">
+            <div class="card text-center">
                 <i class="bi bi-film" style="font-size: 5rem; margin: 0 auto;"></i>
                 <div class="card-body">
                     <h5 class="card-title">My Favorite Movies</h5>
                     <p class="card-text">View all your favorite movies and edit them!</p>
-                    <a href="/favoritemovies" class="btn btn-primary">View Movie Collection</a>
+                     <div class="d-grid gap-2 col-12 mx-auto">
+                         <a href="/favoritemovies" class="btn btn-primary text-center">View Movie Collection</a>
+                    </div>     
                 </div>
             </div>
         </div>

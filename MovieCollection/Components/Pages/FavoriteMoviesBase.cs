@@ -16,6 +16,8 @@ namespace MovieCollection.Components.Pages
 
         public ICollection<MovieEntity>? FavoriteMovies { get; set; }
 
+        public MovieEntity? SelectedMovie { get; set; }
+
         public bool showToast;
         public string toastMessage = "";
 
@@ -46,14 +48,27 @@ namespace MovieCollection.Components.Pages
             ToastService.OnShow -= ShowToast;
         }
 
+        public bool ShowModal = false;
+
+        public void OpenModal(MovieEntity movie)
+        {
+            SelectedMovie = movie;
+            ShowModal = true;
+        }
+
+        public void CloseModal()
+        {
+            ShowModal = false;
+        }
+
         public async Task RemoveFromFavorites(MovieEntity movie)
         {
-         
             var user = await UserService.GetUserAsync("TestUser");
             if (user != null && user.FavoriteMovies.Any(x => x.ExternalId == movie.ExternalId))
             {
                 await MovieService.RemoveFavoriteMovieAsync(user.Username, movie.ExternalId);
                 FavoriteMovies!.Remove(movie);
+                CloseModal();
                 StateHasChanged();
             }
         }

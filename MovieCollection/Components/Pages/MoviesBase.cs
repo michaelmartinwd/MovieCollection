@@ -17,9 +17,6 @@ namespace MovieCollection.Components.Pages
         [Inject]
         private MovieLibraryAPI MovieLibraryAPI { get; set; } = null!;
 
-        //public MovieEntity Movie { get; set; } = new();
-
-        //public List<MovieEntity> MovieList { get; set; } = new();
         public List<MovieSearchEntity> MovieSearchList { get; set; } = new();
         public MovieSearchEntity MovieSearch { get; set; } = new();
 
@@ -31,12 +28,15 @@ namespace MovieCollection.Components.Pages
         public bool showToast;
         public string toastMessage = "";
 
+        public ICollection<MovieEntity>? FavoriteMovies { get; set; }
+
         protected async override void OnInitialized()
         {
             base.OnInitialized();
             ToastService.OnShow += ShowToast;
             await SearchMovies();
             CurrentUser = await UserService.GetUserAsync("TestUser");
+            FavoriteMovies = CurrentUser.FavoriteMovies;
             StateHasChanged();
         }
 
@@ -99,17 +99,6 @@ namespace MovieCollection.Components.Pages
             await SearchMovies();
         }
 
-        //public async Task<List<MovieEntity>> GetMovies()
-        //{
-        //    return MovieList = await MovieService.GetMoviesAsync();
-        //}
-
-        //public async Task SubmitMovie()
-        //{
-        //    await MovieService.AddMovieAsync(Movie);
-        //    await GetMovies();
-        //}
-
         public async Task AddFavoriteMovieToUser(MovieSearchEntity movie)
         {
             var existingMovie =
@@ -135,6 +124,9 @@ namespace MovieCollection.Components.Pages
 "TestUser",
 existingMovie);
             }
+
+            CurrentUser = await UserService.GetUserAsync("TestUser");
+            FavoriteMovies = CurrentUser.FavoriteMovies;
 
 
         }
