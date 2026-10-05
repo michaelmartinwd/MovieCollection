@@ -1,0 +1,58 @@
+﻿@page "/movieassistant"
+@inherits MovieAssistantBase
+@rendermode InteractiveServer
+        
+<PageTitle>Movie Assistant</PageTitle>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mt-3">Movie Assistant</h1>
+        </div>
+    </div>
+
+    <p class="text-muted">
+        Ask me anything about movies.
+    </p>
+
+    <div class="mb-3">
+        <InputText class="form-control"
+                   @bind-Value="Question"
+                   placeholder="Ask a movie question..." />
+    </div>
+
+    <button class="btn btn-primary"
+            @onclick="AskQuestion"
+            disabled="@IsLoading">
+
+        @if (IsLoading)
+        {
+            <span class="spinner-border spinner-border-sm me-2">
+            </span>
+
+            <span>Thinking...</span>
+        }
+        else
+        {
+            <span>Ask</span>
+        }
+
+    </button>
+
+    @if (!string.IsNullOrWhiteSpace(Answer))
+    {
+        <div class="card mt-4">
+
+            <div class="card-header">
+                Movie Assistant
+            </div>
+
+            <div class="card-body">
+                @Answer
+            </div>
+
+        </div>
+    }
+
+</div>

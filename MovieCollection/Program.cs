@@ -24,6 +24,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<Seed>();
 builder.Services.AddScoped<ToastService>();
+builder.Services.AddHttpClient<IClaudeService, ClaudeService>();
 
 var app = builder.Build();
 
