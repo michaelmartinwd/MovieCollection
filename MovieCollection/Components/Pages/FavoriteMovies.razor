@@ -48,10 +48,10 @@
     <div class="py-5">
         <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
            
-            <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
-
             @if (PagedMovies is not null && PagedMovies.Count > 0)
             {
+               <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
+
                 @foreach (var movie in PagedMovies)
                 {
                     <div class="col-12">    
@@ -97,9 +97,10 @@
                         </div>
                     </div>
                 }
-            }
 
-            <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
+                <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
+
+            }
 
         </div>
 
