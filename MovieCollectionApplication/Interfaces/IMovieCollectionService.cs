@@ -9,7 +9,9 @@ namespace MovieCollectionApplication.Interfaces
         Task<List<MovieEntity>> GetMoviesAsync();
 
         Task<MovieEntity?> GetByExternalIdAsync(int externalMovieId);
-        Task AddFavoriteMovieAsync(string username, MovieEntity movie);
-        Task RemoveFavoriteMovieAsync(string username, int externalId);
+        Task AddFavoriteMovieAsync(Guid userId, MovieEntity movie);
+        Task RemoveFavoriteMovieAsync(Guid userId, int externalId);
+        Task<List<MovieEntity>> GetFavoriteMoviesAsync(Guid userId, int page, int pageSize);
+        Task<int> GetTotalFavoriteMoviesAsync(Guid userId);
     }
 }

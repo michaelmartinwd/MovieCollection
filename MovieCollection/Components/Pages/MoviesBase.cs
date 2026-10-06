@@ -116,17 +116,17 @@ namespace MovieCollection.Components.Pages
                 await MovieService.AddMovieAsync(newMovie);
 
                 await MovieService.AddFavoriteMovieAsync(
-    "TestUser",
+    CurrentUser.Id,
     newMovie);
             }
             else if (existingMovie is not null && CurrentUser is not null && CurrentUser.FavoriteMovies.Any(x => x.ExternalId != movie.Id))
             {
                 await MovieService.AddFavoriteMovieAsync(
-"TestUser",
+CurrentUser.Id,
 existingMovie);
             }
 
-            CurrentUser = await UserService.GetUserAsync("TestUser");
+            CurrentUser = await UserService.GetUserAsync(CurrentUser.Username);
             FavoriteMovies = CurrentUser.FavoriteMovies;
 
 

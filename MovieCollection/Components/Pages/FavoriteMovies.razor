@@ -1,4 +1,5 @@
-﻿@inherits FavoriteMoviesBase
+﻿@using MovieCollection.Components.Shared
+@inherits FavoriteMoviesBase
 @rendermode InteractiveServer
 
 @page "/favoritemovies"
@@ -13,6 +14,9 @@
 
     <div class="py-5">
         <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
+           
+            <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
+
             @if (FavoriteMovies is not null)
             {
                 @foreach (var movie in FavoriteMovies)
@@ -61,6 +65,9 @@
                     </div>
                 }
             }
+
+            <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
+
         </div>
 
     </div>

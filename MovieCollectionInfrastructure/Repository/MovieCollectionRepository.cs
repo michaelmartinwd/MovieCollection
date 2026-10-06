@@ -13,14 +13,14 @@ namespace MovieCollectionInfrastructure.Repository
         }
 
         public async Task AddFavoriteMovieAsync(
-    string username,
+    Guid userId,
     MovieEntity movie)
         {
             using var context = _repo.CreateDbContext();
 
             var user = await context.Users
                 .Include(u => u.FavoriteMovies)
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
                 return;
@@ -105,13 +105,13 @@ namespace MovieCollectionInfrastructure.Repository
                 .FirstOrDefaultAsync(m => m.ExternalId == externalMovieId);
         }
 
-        public async Task RemoveFavoriteMovieAsync(string username, int movieId)
+        public async Task RemoveFavoriteMovieAsync(Guid userId, int movieId)
         {
             await using var context = await _repo.CreateDbContextAsync();
 
             var user = await context.Users
                 .Include(u => u.FavoriteMovies)
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
                 return;
@@ -125,6 +125,33 @@ namespace MovieCollectionInfrastructure.Repository
             user.FavoriteMovies.Remove(movie);
 
             await context.SaveChangesAsync();
+        }
+
+        public async Task<List<MovieEntity>> GetFavoriteMoviesAsync(
+    Guid userId,
+    int page,
+    int pageSize)
+        {
+            await using var context = await _repo.CreateDbContextAsync();
+
+            return await context.Users
+                .Where(u => u.Id == userId)
+                .SelectMany(u => u.FavoriteMovies)
+                .OrderBy(m => m.Title)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<int> GetFavoriteMovieCountAsync(Guid userId)
+        {
+            await using var context = await _repo.CreateDbContextAsync();
+
+            return await context.Users
+                .Where(u => u.Id == userId)
+                .SelectMany(u => u.FavoriteMovies)
+                .CountAsync();
         }
     }
 }

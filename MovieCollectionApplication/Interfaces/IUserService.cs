@@ -5,7 +5,7 @@ namespace MovieCollectionApplication.Interfaces
     public interface IUserService
     {
         Task<UserEntity> AddUserAsync(UserEntity user);
-        Task<UserEntity?> GetUserAsync(string username);
+        Task<UserEntity> GetUserAsync(string username);
         Task UpdateUser(UserEntity user);
     }
 }

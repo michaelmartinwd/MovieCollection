@@ -37,16 +37,26 @@ namespace MovieCollectionApplication.Services
             return await _repo.GetByExternalIdAsync(externalMovieId);
         }
 
-        public async Task AddFavoriteMovieAsync(string username, MovieEntity movie)
+        public async Task AddFavoriteMovieAsync(Guid userId, MovieEntity movie)
         {
-            await _repo.AddFavoriteMovieAsync(username, movie);
+            await _repo.AddFavoriteMovieAsync(userId, movie);
             _toastService.Show("Movie added to favorites!");
         }
 
-        public async Task RemoveFavoriteMovieAsync(string username, int externalId)
+        public async Task RemoveFavoriteMovieAsync(Guid userId, int externalId)
         {
-            await _repo.RemoveFavoriteMovieAsync(username, externalId);
+            await _repo.RemoveFavoriteMovieAsync(userId, externalId);
             _toastService.Show("Movie removed from favorites!");
+        }
+
+        public async Task<List<MovieEntity>> GetFavoriteMoviesAsync(Guid userId, int page, int pageSize)
+        {
+            return await _repo.GetFavoriteMoviesAsync(userId, page, pageSize);
+        }
+
+        public async Task<int> GetTotalFavoriteMoviesAsync(Guid userId)
+        {
+            return await _repo.GetFavoriteMovieCountAsync(userId);
         }
     }
 }

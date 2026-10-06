@@ -20,7 +20,7 @@ namespace MovieCollectionApplication.Services
             return newUser;
         }
 
-        public Task<UserEntity?> GetUserAsync(string username)
+        public Task<UserEntity> GetUserAsync(string username)
         {
             return _repo.GetUser(username);
         }
