@@ -1,6 +1,7 @@
 ﻿using MovieCollectionApplication.Interfaces;
 using MovieCollectionEntities;
 using MovieCollectionInfrastructure.Repository;
+using static MovieCollectionInfrastructure.Repository.MovieCollectionRepository;
 
 namespace MovieCollectionApplication.Services
 {
@@ -49,10 +50,9 @@ namespace MovieCollectionApplication.Services
             _toastService.Show("Movie removed from favorites!");
         }
 
-        public async Task<List<MovieEntity>> GetFavoriteMoviesAsync(Guid userId, int page, int pageSize)
-        {
-            return await _repo.GetFavoriteMoviesAsync(userId, page, pageSize);
-        }
+        public Task<PagedResult<MovieEntity>> GetFavoriteMoviesAsync(
+    Guid userId, string? title, int? year, int page, int pageSize)
+    => _repo.GetFavoriteMoviesAsync(userId, title, year, page, pageSize);
 
         public async Task<int> GetTotalFavoriteMoviesAsync(Guid userId)
         {

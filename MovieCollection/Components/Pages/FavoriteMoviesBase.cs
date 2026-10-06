@@ -35,44 +35,25 @@ namespace MovieCollection.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
             ToastService.OnShow += ShowToast;
             User = await UserService.GetUserAsync("TestUser");
 
             if (User is not null)
-            {
-                FavoriteMovies = await MovieService.GetFavoriteMoviesAsync(User.Id, 1, 10);
                 await LoadPage(1);
-            }
         }
 
         public async Task LoadPage(int page)
         {
+            if (User is null) return;
+
             CurrentPage = page;
 
-            var movies = FavoriteMovies.AsEnumerable();
+            var (items, total) = await MovieService.GetFavoriteMoviesAsync(
+                User.Id, SearchTitle, SearchYear, CurrentPage, PageSize);
 
-            if (!string.IsNullOrWhiteSpace(SearchTitle))
-            {
-                movies = movies.Where(m =>
-                    m.Title.Contains(
-                        SearchTitle,
-                        StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (SearchYear.HasValue)
-            {
-                movies = movies.Where(m =>
-                    m.ReleaseDate.Year == SearchYear.Value);
-            }
-
-            TotalMovies = movies.Count();
-            TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
-
-            PagedMovies = movies
-                .Skip((CurrentPage - 1) * PageSize)
-                .Take(PageSize)
-                .ToList();
+            PagedMovies = items;
+            TotalMovies = total;
+            TotalPages = (int)Math.Ceiling(total / (double)PageSize);
         }
 
         public void ShowToast(string message)
@@ -118,18 +99,12 @@ namespace MovieCollection.Components.Pages
             }
         }
 
-        public void ClearFavoriteMovieFilters()
+        public async Task ClearFavoriteMovieFilters()
         {
             SearchTitle = string.Empty;
             SearchYear = null;
-            CurrentPage = 1;
 
-            TotalMovies = FavoriteMovies.Count;
-            TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
-
-            PagedMovies = FavoriteMovies
-                .Take(PageSize)
-                .ToList();
+            await LoadPage(1);
         }
 
     }

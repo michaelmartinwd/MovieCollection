@@ -6,6 +6,7 @@ namespace MovieCollectionInfrastructure.Repository
     public class MovieCollectionRepository
     {
         private readonly IDbContextFactory<MovieCollectionDbContext> _repo;
+        public record PagedResult<T>(List<T> Items, int Total);
 
         public MovieCollectionRepository(IDbContextFactory<MovieCollectionDbContext> repo)
         {
@@ -127,21 +128,34 @@ namespace MovieCollectionInfrastructure.Repository
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<MovieEntity>> GetFavoriteMoviesAsync(
-    Guid userId,
-    int page,
-    int pageSize)
+        public async Task<PagedResult<MovieEntity>> GetFavoriteMoviesAsync(
+            Guid userId, string? title, int? year, int page, int pageSize)
         {
             await using var context = await _repo.CreateDbContextAsync();
 
-            return await context.Users
+            var query = context.Users
                 .Where(u => u.Id == userId)
                 .SelectMany(u => u.FavoriteMovies)
+                .AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                var t = title.Trim().ToLower();
+                query = query.Where(m => m.Title.ToLower().Contains(t));
+            }
+
+            if (year.HasValue)
+                query = query.Where(m => m.ReleaseDate.Year == year.Value);
+
+            var total = await query.CountAsync();
+
+            var items = await query
                 .OrderBy(m => m.Title)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .AsNoTracking()
                 .ToListAsync();
+
+            return new PagedResult<MovieEntity>(items, total);
         }
 
         public async Task<int> GetFavoriteMovieCountAsync(Guid userId)
