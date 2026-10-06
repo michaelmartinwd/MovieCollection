@@ -8,6 +8,7 @@ Key Features:
 - Ability to search for movies via the TMDB API.
 - View Favorite Movies saved
 - Add/Remove favorites functionality
+- Filtering Favorite Movies
 - Movie Assistant using Claude Haiku
 - Pagination
 - Toast messaging
