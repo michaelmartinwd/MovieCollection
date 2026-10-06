@@ -12,26 +12,59 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <label class="form-label">Search by Title:</label>
+                    <InputText class="form-control"
+                               @bind-Value="SearchTitle" />
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <label class="form-label">Search by Year:</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="SearchYear" />
+                </div>
+
+                <div class="d-grid gap-2 col-lg-2 col-sm-12 mx-auto">
+                    <button type="button"
+                            class="btn btn-primary"
+                            @onclick="() => LoadPage(1)">
+                        Filter Movies
+                    </button>
+                </div>
+                <div class="d-grid gap-2 col-lg-2 col-sm-12 mx-auto">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="ClearFavoriteMovieFilters">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="py-5">
         <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
            
             <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
 
-            @if (FavoriteMovies is not null)
+            @if (PagedMovies is not null && PagedMovies.Count > 0)
             {
-                @foreach (var movie in FavoriteMovies)
+                @foreach (var movie in PagedMovies)
                 {
-                    <div class="col-12">
+                    <div class="col-12">    
                         <div class="card w-100">
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <h5>@movie.Title <small class="text-muted">(@movie.ReleaseDate.Year)</small></h5>
+                                        <h5>@movie.Title <small class="text-muted">(@(movie.ReleaseDate.Year))</small></h5>
                                     </div>
                                     <div class="col-lg-8 col-md-12 col-sm-12 text-end">
                                         <div class="btn-group">
                                             <i role="button" class="bi bi-x-circle-fill text-danger" style="font-size: 1.25rem;" @onclick="() => OpenModal(movie)" title="Remove from Favorites"></i>
-                                            @if (ShowModal)
+                                            @if (ShowModal && SelectedMovie is not null)
                                             {
                                                 <div class="modal fade show d-block" tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog">
@@ -86,7 +119,7 @@
         </div>
 
         <div class="toast-body">
-            @toastMessage
+            @toastMessage ?? ""
         </div>
     </div>
 </div>

@@ -14,23 +14,26 @@ namespace MovieCollection.Components.Pages
         [Inject]
         private IMovieCollectionService MovieService { get; set; } = null!;
 
-        public ICollection<MovieEntity>? FavoriteMovies { get; set; }
+        public ICollection<MovieEntity> FavoriteMovies { get; set; }
+        public List<MovieEntity> PagedMovies { get; set; } = new();
 
         public MovieEntity? SelectedMovie { get; set; }
-        public UserEntity User { get; set; } = new(); 
+        public UserEntity User { get; set; } = new();
 
         public bool showToast;
 
         public string toastMessage = "";
-        public string SearchTitle = "";
 
 
         public int CurrentPage = 1;
         public int PageSize = 10;
         public int TotalMovies;
         public int TotalPages;
-      
-        protected async override void OnInitialized()
+
+        public string SearchTitle { get; set; } = string.Empty;
+        public int? SearchYear { get; set; }
+
+        protected override async Task OnInitializedAsync()
         {
             base.OnInitialized();
             ToastService.OnShow += ShowToast;
@@ -38,9 +41,7 @@ namespace MovieCollection.Components.Pages
 
             if (User is not null)
             {
-                TotalMovies = await MovieService.GetTotalFavoriteMoviesAsync(User.Id);
-                TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
-
+                FavoriteMovies = await MovieService.GetFavoriteMoviesAsync(User.Id, 1, 10);
                 await LoadPage(1);
             }
         }
@@ -49,11 +50,29 @@ namespace MovieCollection.Components.Pages
         {
             CurrentPage = page;
 
-            FavoriteMovies = await MovieService.GetFavoriteMoviesAsync(
-                User.Id,
-                CurrentPage,
-                PageSize);
-            StateHasChanged();
+            var movies = FavoriteMovies.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(SearchTitle))
+            {
+                movies = movies.Where(m =>
+                    m.Title.Contains(
+                        SearchTitle,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (SearchYear.HasValue)
+            {
+                movies = movies.Where(m =>
+                    m.ReleaseDate.Year == SearchYear.Value);
+            }
+
+            TotalMovies = movies.Count();
+            TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
+
+            PagedMovies = movies
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
         }
 
         public void ShowToast(string message)
@@ -98,23 +117,20 @@ namespace MovieCollection.Components.Pages
                 StateHasChanged();
             }
         }
-            //}
-            // 2. Filter favorite movies by release year, title
-            //public void FilterFavoriteMovies(string? title, int? releaseYear)
-            //{
-            //    if (FavoriteMovies == null)
-            //        return;
-            //    var filteredMovies = FavoriteMovies.AsQueryable();
-            //    if (!string.IsNullOrEmpty(title))
-            //    {
-            //        filteredMovies = filteredMovies.Where(m => m.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
-            //    }
-            //    if (releaseYear.HasValue)
-            //    {
-            //        filteredMovies = filteredMovies.Where(m => m.ReleaseYear == releaseYear.Value);
-            //    }
-            //    FavoriteMovies = filteredMovies.ToList();
-            //    StateHasChanged();
-            //}
+
+        public void ClearFavoriteMovieFilters()
+        {
+            SearchTitle = string.Empty;
+            SearchYear = null;
+            CurrentPage = 1;
+
+            TotalMovies = FavoriteMovies.Count;
+            TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
+
+            PagedMovies = FavoriteMovies
+                .Take(PageSize)
+                .ToList();
         }
+
+    }
 }
