@@ -1,23 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieCollectionEntities;
+using MovieCollectionInfrastructure.Interfaces;
 
 namespace MovieCollectionInfrastructure.Repository
 {
-    public class MovieCollectionRepository
+    public class MovieCollectionRepository : IMovieCollectionRepository
     {
         private readonly IDbContextFactory<MovieCollectionDbContext> _repo;
-        public record PagedResult<T>(List<T> Items, int Total);
 
         public MovieCollectionRepository(IDbContextFactory<MovieCollectionDbContext> repo)
         {
             _repo = repo;
         }
 
-        public async Task AddFavoriteMovieAsync(
-    Guid userId,
-    MovieEntity movie)
+        public async Task AddFavoriteMovieAsync(Guid userId, MovieEntity movie)
         {
-            using var context = _repo.CreateDbContext();
+            using var context = await _repo.CreateDbContextAsync();
 
             var user = await context.Users
                 .Include(u => u.FavoriteMovies)
@@ -29,15 +27,20 @@ namespace MovieCollectionInfrastructure.Repository
             var existingMovie = await context.Movies
                 .FirstOrDefaultAsync(m => m.ExternalId == movie.ExternalId);
 
-            var alreadyFavorite = user.FavoriteMovies
-       .Any(m => m.ExternalId == movie.ExternalId);
+            var movieToAdd = existingMovie ?? movie;
+
+            if (existingMovie == null)
+            {
+                await context.Movies.AddAsync(movieToAdd);
+            }
+
+            var alreadyFavorite = user.FavoriteMovies.Any(m => m.ExternalId == movie.ExternalId);
 
             if (!alreadyFavorite)
             {
-                user.FavoriteMovies.Add(existingMovie!);
+                user.FavoriteMovies.Add(movieToAdd);
+                await context.SaveChangesAsync();
             }
-
-            await context.SaveChangesAsync();
         }
 
         public async Task<UserEntity> AddUser(UserEntity user)
@@ -70,7 +73,8 @@ namespace MovieCollectionInfrastructure.Repository
 
         public async Task UpdateUser(UserEntity user)
         {
-            using var context = _repo.CreateDbContext();
+            await using var context = await _repo.CreateDbContextAsync();
+            context.Users.Update(user);
             await context.SaveChangesAsync();
         }
 

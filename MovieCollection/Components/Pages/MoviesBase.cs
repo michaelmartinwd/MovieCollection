@@ -6,7 +6,7 @@ using MovieCollectionEntities;
 
 namespace MovieCollection.Components.Pages
 {
-    public partial class MoviesBase : ComponentBase
+    public partial class MoviesBase : ComponentBase, IDisposable
     {
         [Inject]
         private ToastService ToastService { get; set; } = null!;
@@ -20,47 +20,51 @@ namespace MovieCollection.Components.Pages
         public List<MovieSearchEntity> MovieSearchList { get; set; } = new();
         public MovieSearchEntity MovieSearch { get; set; } = new();
 
-        public int CurrentPage = 1;
-        public int TotalPages;
-        public string SearchTitle = "";
+        public int CurrentPage { get; set; } = 1;
+        public int TotalPages { get; set; }
+        public string SearchTitle { get; set; } = string.Empty;
         public UserEntity CurrentUser { get; set; } = new();
 
-        public bool showToast;
-        public string toastMessage = "";
+        public bool ShowToast { get; set; }
+        public string ToastMessage { get; set; } = string.Empty;
 
-        public ICollection<MovieEntity>? FavoriteMovies { get; set; }
+        public ICollection<MovieEntity> FavoriteMovies { get; set; } = new List<MovieEntity>();
 
-        protected async override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
-            ToastService.OnShow += ShowToast;
-            await SearchMovies();
-            CurrentUser = await UserService.GetUserAsync("TestUser");
-            FavoriteMovies = CurrentUser.FavoriteMovies;
-            StateHasChanged();
+            await base.OnInitializedAsync();
+            ToastService.OnShow += ShowToastHandler;
+            await InitializeAsync();
         }
 
-        public void ShowToast(string message)
+        private async Task InitializeAsync()
         {
-            toastMessage = message;
-            showToast = true;
+            await SearchMovies();
+            CurrentUser = await UserService.GetUserAsync("TestUser");
+            FavoriteMovies = CurrentUser?.FavoriteMovies ?? new List<MovieEntity>();
+            await InvokeAsync(StateHasChanged);
+        }
 
+        private void ShowToastHandler(string message)
+        {
+            ToastMessage = message;
+            ShowToast = true;
             InvokeAsync(StateHasChanged);
         }
 
         public void HideToast()
         {
-            showToast = false;
+            ShowToast = false;
         }
 
         public void Dispose()
         {
-            ToastService.OnShow -= ShowToast;
+            ToastService.OnShow -= ShowToastHandler;
         }
 
         public async Task SearchMovies()
         {
-            SearchTitle = MovieSearch.Title ?? "";
+            SearchTitle = MovieSearch.Title ?? string.Empty;
 
             var searchResults = await MovieLibraryAPI.SearchMoviesAsync(SearchTitle, CurrentPage);
 
@@ -73,15 +77,15 @@ namespace MovieCollection.Components.Pages
 
                 if (searchResults.Results != null && searchResults.Results.Count > 0)
                 {
-                    foreach (var result in searchResults.Results!)
+                    foreach (var result in searchResults.Results)
                     {
                         var movieSearchEntity = new MovieSearchEntity
                         {
-                            Title = result.Title!,
+                            Title = result.Title ?? string.Empty,
                             ReleaseDate = result.ReleaseDate.HasValue
-                                        ? DateTime.SpecifyKind(result.ReleaseDate.Value, DateTimeKind.Utc)
-                                        : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
-                                Overview = result.Overview!,
+                                ? DateTime.SpecifyKind(result.ReleaseDate.Value, DateTimeKind.Utc)
+                                : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
+                            Overview = result.Overview ?? string.Empty,
                             Id = result.Id
                         };
 
@@ -89,21 +93,21 @@ namespace MovieCollection.Components.Pages
                     }
                 }
 
-                MovieSearchList.OrderBy(m => m.Title);
+                MovieSearchList = MovieSearchList.OrderBy(m => m.Title).ToList();
             }
         }
 
         public async Task LoadPage(int currentPage)
         {
             CurrentPage = currentPage;
-
             await SearchMovies();
         }
 
         public async Task AddFavoriteMovieToUser(MovieSearchEntity movie)
         {
-            var existingMovie =
-                await MovieService.GetByExternalIdAsync(movie.Id);
+            if (movie == null) return;
+
+            var existingMovie = await MovieService.GetByExternalIdAsync(movie.Id);
 
             if (existingMovie == null)
             {
@@ -114,23 +118,22 @@ namespace MovieCollection.Components.Pages
                     movie.ReleaseDate);
 
                 await MovieService.AddMovieAsync(newMovie);
-
-                await MovieService.AddFavoriteMovieAsync(
-    CurrentUser.Id,
-    newMovie);
+                await MovieService.AddFavoriteMovieAsync(CurrentUser.Id, newMovie);
             }
-            else if (existingMovie is not null && CurrentUser is not null && CurrentUser.FavoriteMovies.Any(x => x.ExternalId != movie.Id))
+            else
             {
-                await MovieService.AddFavoriteMovieAsync(
-CurrentUser.Id,
-existingMovie);
+                // Only add if not already a favorite
+                if (CurrentUser?.FavoriteMovies == null || !CurrentUser.FavoriteMovies.Any(x => x.ExternalId == movie.Id))
+                {
+                    await MovieService.AddFavoriteMovieAsync(CurrentUser.Id, existingMovie);
+                }
             }
 
-            CurrentUser = await UserService.GetUserAsync(CurrentUser.Username);
-            FavoriteMovies = CurrentUser.FavoriteMovies;
-
-
+            // Refresh user and favorites
+            var username = CurrentUser?.Username ?? "TestUser";
+            CurrentUser = await UserService.GetUserAsync(username);
+            FavoriteMovies = CurrentUser?.FavoriteMovies;
+            await InvokeAsync(StateHasChanged);
         }
-
     }
 }

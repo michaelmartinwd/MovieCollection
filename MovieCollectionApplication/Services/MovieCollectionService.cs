@@ -1,7 +1,6 @@
 ﻿using MovieCollectionApplication.Interfaces;
 using MovieCollectionEntities;
 using MovieCollectionInfrastructure.Repository;
-using static MovieCollectionInfrastructure.Repository.MovieCollectionRepository;
 
 namespace MovieCollectionApplication.Services
 {
@@ -20,7 +19,7 @@ namespace MovieCollectionApplication.Services
         {
             var movieEntity = new MovieEntity(movie.ExternalId, movie.Title, movie.Overview, movie.ReleaseDate);
 
-           await _repo.AddMovie(movieEntity);
+            await _repo.AddMovie(movieEntity);
         }
 
         public async Task<MovieEntity> GetMovieAsync(int externalId)
