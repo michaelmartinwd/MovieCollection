@@ -30,7 +30,6 @@
         {
             <span class="spinner-border spinner-border-sm me-2">
             </span>
-
             <span>Thinking...</span>
         }
         else
@@ -40,10 +39,11 @@
 
     </button>
 
+    <button class="btn btn-secondary" @onclick="ClearQuestion" disabled="@IsLoading">Clear</button>
+
     @if (!string.IsNullOrWhiteSpace(Answer))
     {
         <div class="card mt-4">
-
             <div class="card-header">
                 Movie Assistant
             </div>
@@ -51,7 +51,6 @@
             <div class="card-body">
                 @Answer
             </div>
-
         </div>
     }
 
