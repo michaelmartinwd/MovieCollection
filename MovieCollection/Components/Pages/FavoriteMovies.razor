@@ -54,14 +54,14 @@
 
                 @foreach (var movie in PagedMovies)
                 {
-                    <div class="col-12">    
-                        <div class="card w-100">
-                            <div class="card-body">
+                    <div class="col-lg-4">    
+                        <div class="card w-100 h-100">
+                            <div class="card-body d-flex flex-column">
                                 <div class="row mb-2">
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <h5>@movie.Title <small class="text-muted">(@(movie.ReleaseDate.Year))</small></h5>
+                                    <div class="col-lg-10 col-md-12 col-sm-12">
+                                        <h5 class="card-title">@movie.Title <small class="text-muted">(@(movie.ReleaseDate.Year))</small></h5>
                                     </div>
-                                    <div class="col-lg-8 col-md-12 col-sm-12 text-end">
+                                    <div class="col-lg-2 col-md-12 col-sm-12 text-end">
                                         <div class="btn-group">
                                             <i role="button" class="bi bi-x-circle-fill text-danger" style="font-size: 1.25rem;" @onclick="() => OpenModal(movie)" title="Remove from Favorites"></i>
                                         </div>
@@ -70,7 +70,26 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <p class="card-text">@movie.Overview</p>
+                                        <p class="card-text">
+                                            @(ExpandedMovies.Contains(movie.ExternalId) || movie.Overview.Length <= 150
+                                                ? movie.Overview
+                                                : movie.Overview[..150] + "...")
+                                             @if (movie.Overview.Length > 150)
+                                            {
+                                                <span class="btn btn-link"
+                                                @onclick="() => ToggleText(movie.ExternalId)">
+                                                    @if (ExpandedMovies.Contains(movie.ExternalId))
+                                                    {
+                                                        <i class='bi bi-dash-circle' title="View Less"></i>                                                  
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class='bi bi-plus-circle' title="View More"></i>
+                                                    }
+                                                </span>
+                                            }
+                                         </p>
+
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +139,7 @@
         </div>
 
         <div class="toast-body">
-            @ToastMessage ?? ""
+            @(ToastMessage ?? "")
         </div>
     </div>
 </div>

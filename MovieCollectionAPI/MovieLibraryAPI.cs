@@ -17,13 +17,15 @@ namespace MovieCollectionAPI
         {
             var apikey = _configuration.GetConnectionString("TMDB_API_KEY");
             var client = new TMDbClient(apikey!);
+            var pageSize = 12;
 
             var searchResults = await client.SearchMovieAsync(query, page);
 
             if (searchResults?.Results != null)
             {
-                foreach (var result in searchResults.Results)
-                    Console.WriteLine(result.Title);
+                searchResults.Results = searchResults.Results
+                    .Take(pageSize)
+                    .ToList();
 
                 return searchResults;
             }

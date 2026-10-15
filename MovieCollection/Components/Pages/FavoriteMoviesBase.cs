@@ -25,12 +25,14 @@ namespace MovieCollection.Components.Pages
         public string ToastMessage { get; set; } = string.Empty;
 
         public int CurrentPage { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = 12;
         public int TotalMovies { get; set; }
         public int TotalPages { get; set; }
 
         public string SearchTitle { get; set; } = string.Empty;
         public int? SearchYear { get; set; }
+
+        public HashSet<int> ExpandedMovies = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -107,6 +109,14 @@ namespace MovieCollection.Components.Pages
             if (SelectedMovie is not null)
             {
                 await RemoveFromFavorites(SelectedMovie);
+            }
+        }
+
+        public void ToggleText(int movieId)
+        {
+            if (!ExpandedMovies.Add(movieId))
+            {
+                ExpandedMovies.Remove(movieId);
             }
         }
 

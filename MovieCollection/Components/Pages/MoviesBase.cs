@@ -17,7 +17,7 @@ namespace MovieCollection.Components.Pages
         [Inject]
         private MovieLibraryAPI MovieLibraryAPI { get; set; } = null!;
 
-        public List<MovieSearchEntity> MovieSearchList { get; set; } = new();
+        public List<MovieSearchEntity> MovieSearchList { get; set; } = [];
         public MovieSearchEntity MovieSearch { get; set; } = new();
 
         public int CurrentPage { get; set; } = 1;
@@ -28,7 +28,9 @@ namespace MovieCollection.Components.Pages
         public bool ShowToast { get; set; }
         public string ToastMessage { get; set; } = string.Empty;
 
-        public ICollection<MovieEntity> FavoriteMovies { get; set; } = new List<MovieEntity>();
+        public ICollection<MovieEntity> FavoriteMovies { get; set; } = [];
+
+        public HashSet<int> ExpandedMovies = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -125,15 +127,23 @@ namespace MovieCollection.Components.Pages
                 // Only add if not already a favorite
                 if (CurrentUser?.FavoriteMovies == null || !CurrentUser.FavoriteMovies.Any(x => x.ExternalId == movie.Id))
                 {
-                    await MovieService.AddFavoriteMovieAsync(CurrentUser.Id, existingMovie);
+                    await MovieService.AddFavoriteMovieAsync(CurrentUser!.Id, existingMovie);
                 }
             }
 
             // Refresh user and favorites
             var username = CurrentUser?.Username ?? "TestUser";
             CurrentUser = await UserService.GetUserAsync(username);
-            FavoriteMovies = CurrentUser?.FavoriteMovies;
+            FavoriteMovies = CurrentUser?.FavoriteMovies!;
             await InvokeAsync(StateHasChanged);
+        }
+
+        public void ToggleText(int movieId)
+        {
+            if (!ExpandedMovies.Add(movieId))
+            {
+                ExpandedMovies.Remove(movieId);
+            }
         }
     }
 }
