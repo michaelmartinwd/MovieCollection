@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MovieCollectionEntities\MovieCollectionEntities.csproj" />
     <ProjectReference Include="..\MovieCollectionInfrastructure\MovieCollectionInfrastructure.csproj" />
   </ItemGroup>

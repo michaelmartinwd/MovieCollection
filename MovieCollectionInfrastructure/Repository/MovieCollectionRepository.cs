@@ -59,6 +59,14 @@ namespace MovieCollectionInfrastructure.Repository
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
 
+        public async Task<UserEntity?> GetUserByIdAsync(Guid userId)
+        {
+            using var context = _repo.CreateDbContext();
+            return await context.Users
+                .Include(u => u.FavoriteMovies)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
         public async Task<UserEntity?> GetUser(string username)
         {
             using var context = _repo.CreateDbContext();

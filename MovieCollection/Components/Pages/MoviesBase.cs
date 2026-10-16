@@ -9,6 +9,8 @@ namespace MovieCollection.Components.Pages
     public partial class MoviesBase : ComponentBase, IDisposable
     {
         [Inject]
+        private CurrentUserService CurrentUserService { get; set; } = null!;
+        [Inject]
         private ToastService ToastService { get; set; } = null!;
         [Inject]
         private IUserService UserService { get; set; } = null!;
@@ -35,10 +37,22 @@ namespace MovieCollection.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
+
             ToastService.OnShow += ShowToastHandler;
+
             await SearchMovies();
-            CurrentUser = await UserService.GetUserAsync("TestUser");
-            FavoriteMovies = CurrentUser?.FavoriteMovies ?? new List<MovieEntity>();
+
+            var currentUser = await CurrentUserService.GetCurrentUserAsync();
+            CurrentUser = currentUser ?? new UserEntity();
+
+            if (CurrentUser is not null)
+            { 
+                FavoriteMovies = CurrentUser.FavoriteMovies ?? new List<MovieEntity>();
+            }
+            else
+            {
+                FavoriteMovies = new List<MovieEntity>();
+            }
         }
 
         private void ShowToastHandler(string message)
@@ -125,9 +139,8 @@ namespace MovieCollection.Components.Pages
                 }
             }
 
-            // Refresh user and favorites
-            var username = CurrentUser?.Username ?? "TestUser";
-            CurrentUser = await UserService.GetUserAsync(username);
+            var user = await UserService.GetUserByIdAsync(CurrentUser.Id);
+            CurrentUser = user!;
             FavoriteMovies = CurrentUser?.FavoriteMovies!;
             await InvokeAsync(StateHasChanged);
         }

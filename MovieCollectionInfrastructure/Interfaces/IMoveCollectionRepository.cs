@@ -13,6 +13,7 @@ namespace MovieCollectionInfrastructure.Interfaces
         Task<UserEntity> AddUser(UserEntity user);
         Task<UserEntity?> GetUserAsync(string username);
         Task<UserEntity?> GetUser(string username);
+        Task<UserEntity?> GetUserByIdAsync(Guid userId);
         Task<List<UserEntity>> GetAllUsers();
         Task UpdateUser(UserEntity user);
 

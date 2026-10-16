@@ -1,4 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using MovieCollectionApplication.Services
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CurrentUserService CurrentUserService
+@inject UserService UserService
+@inherits LayoutComponentBase
 
 <!-- Favicons -->
 <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
@@ -69,3 +75,17 @@
         <p><img class="" src="/images/blue_square_logo.svg" width="32" height="32" alt=""> <small>This product uses the TMDB API but is not endorsed or certified by TMDB.</small></p>
     </div>
 </footer>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState =
+            await AuthStateProvider.GetAuthenticationStateAsync();
+
+        if (authState.User.Identity?.IsAuthenticated != true)
+        {
+            Navigation.NavigateTo("/demo/start", forceLoad: true);
+            return;
+        }
+    }
+}

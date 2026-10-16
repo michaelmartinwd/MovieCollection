@@ -8,6 +8,8 @@ namespace MovieCollection.Components.Pages
     public partial class FavoriteMoviesBase : ComponentBase, IDisposable
     {
         [Inject]
+        private CurrentUserService CurrentUserService { get; set; } = null!;
+        [Inject]
         private ToastService ToastService { get; set; } = null!;
         [Inject]
         private IUserService UserService { get; set; } = null!;
@@ -18,7 +20,6 @@ namespace MovieCollection.Components.Pages
         public List<MovieEntity> PagedMovies { get; set; } = [];
 
         public MovieEntity? SelectedMovie { get; set; }
-        public UserEntity? User { get; set; }
 
         public bool ShowModal { get; set; }
         public bool IsToastVisible { get; set; }
@@ -33,28 +34,31 @@ namespace MovieCollection.Components.Pages
         public int? SearchYear { get; set; }
 
         public HashSet<int> ExpandedMovies = [];
+        public UserEntity CurrentUser { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
             ToastService.OnShow += ShowToast;
-            User = await UserService.GetUserAsync("TestUser");
 
-            if (User is not null)
+            var currentUser = await CurrentUserService.GetCurrentUserAsync();
+            CurrentUser = currentUser ?? new UserEntity();
+
+            if (CurrentUserService.CurrentUser is not null)
                 await LoadPage(1);
         }
 
         public async Task LoadPage(int page)
         {
-            if (User is null) return;
+            if (CurrentUser is null) return;
 
             CurrentPage = page;
 
-            var (items, total) = await MovieService.GetFavoriteMoviesAsync(
-                User.Id, SearchTitle, SearchYear, CurrentPage, PageSize);
+            var result = await MovieService.GetFavoriteMoviesAsync(
+                CurrentUser.Id, SearchTitle, SearchYear, CurrentPage, PageSize);
 
-            PagedMovies = items ?? new List<MovieEntity>();
-            TotalMovies = total;
-            TotalPages = (int)Math.Ceiling(total / (double)PageSize);
+            PagedMovies = result.Items ?? new List<MovieEntity>();
+            TotalMovies = result.Total;
+            TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
         }
 
         public void ShowToast(string message)
@@ -82,16 +86,14 @@ namespace MovieCollection.Components.Pages
 
         public async Task RemoveFromFavorites(MovieEntity movie)
         {
-            var user = await UserService.GetUserAsync("TestUser");
-            if (user is null) return;
+            if (CurrentUser is null) return;
 
-            if (user.FavoriteMovies.Any(x => x.ExternalId == movie.ExternalId))
-            {
-                await MovieService.RemoveFavoriteMovieAsync(user.Id, movie.ExternalId);
-                CloseModal();
-                await LoadPage(CurrentPage);
-                StateHasChanged();
-            }
+            await MovieService.RemoveFavoriteMovieAsync(
+                CurrentUser.Id, movie.ExternalId);
+
+            await LoadPage(CurrentPage);
+
+            CloseModal();
         }
 
         public async Task ClearFavoriteMovieFilters()

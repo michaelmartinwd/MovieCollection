@@ -1,42 +1,63 @@
 ﻿@page "/"
-@using MovieCollection.Components.Shared
 
 <PageTitle>Home</PageTitle>
 
 <div class="container">
     <div class="row pt-5 justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Welcome to the Movie Collection App Demo!</h5>
+                    <p class="card-text">Your personal movie collection has been created automatically. Search for movies, save your favorites, and explore the AI movie assistant. No account required!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pt-5 justify-content-center">
         <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
             <div class="card">
                 <i class="bi bi-search" style="font-size: 5rem; margin: 0 auto;"></i>
-                <div class="card-body text-center">
+                <div class="card-body text-center w-100 h-100">
                     <h5 class="card-title">Search for Movies</h5>
                     <p class="card-text">Find movies from accessing the TMDB API and favorite them!</p>
                     <div class="d-grid gap-2 col-12 mx-auto">
-                         <a href="/movies" class="btn btn-primary text-center">Search Movies</a>
-                    </div>                  
+                        <a href="/movies" class="btn btn-primary text-center">Search Movies</a>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-            <div class="card text-center">
+            <div class="card text-center w-100 h-100">
                 <i class="bi bi-film" style="font-size: 5rem; margin: 0 auto;"></i>
                 <div class="card-body">
                     <h5 class="card-title">My Favorite Movies</h5>
                     <p class="card-text">View all your favorite movies and edit them!</p>
-                     <div class="d-grid gap-2 col-12 mx-auto">
-                         <a href="/favoritemovies" class="btn btn-primary text-center">View Movie Collection</a>
-                    </div>     
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                        <a href="/favoritemovies" class="btn btn-primary text-center">View Movie Collection</a>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-            <div class="card text-center">
+            <div class="card text-center w-100 h-100">
                 <i class="bi bi-claude" style="font-size: 5rem; margin: 0 auto;"></i>
                 <div class="card-body">
                     <h5 class="card-title">Ask AI About Movies</h5>
                     <p class="card-text">Get recommendations and insights from our AI assistant!</p>
                     <div class="d-grid gap-2 col-12 mx-auto">
                         <a href="/MovieAssistant" class="btn btn-primary text-center">Ask Movie Assistant</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+            <div class="card text-center w-100 h-100">
+                <i class="bi bi-book" style="font-size: 5rem; margin: 0 auto;"></i>
+                <div class="card-body">
+                    <h5 class="card-title">About</h5>
+                    <p class="card-text">Learn why this app was created and disclaimers.</p>
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                        <a href="/about" class="btn btn-primary text-center">About this Demo</a>
                     </div>
                 </div>
             </div>
