@@ -15,7 +15,7 @@ namespace MovieCollection.Components.Pages
         private IMovieCollectionService MovieService { get; set; } = null!;
 
         public ICollection<MovieEntity> FavoriteMovies { get; set; } = new List<MovieEntity>();
-        public List<MovieEntity> PagedMovies { get; set; } = new();
+        public List<MovieEntity> PagedMovies { get; set; } = [];
 
         public MovieEntity? SelectedMovie { get; set; }
         public UserEntity? User { get; set; }
@@ -40,9 +40,7 @@ namespace MovieCollection.Components.Pages
             User = await UserService.GetUserAsync("TestUser");
 
             if (User is not null)
-            {
                 await LoadPage(1);
-            }
         }
 
         public async Task LoadPage(int page)
@@ -122,10 +120,7 @@ namespace MovieCollection.Components.Pages
 
         public void Dispose()
         {
-            if (ToastService != null)
-            {
-                ToastService.OnShow -= ShowToast;
-            }
+            ToastService?.OnShow -= ShowToast;
         }
     }
 }

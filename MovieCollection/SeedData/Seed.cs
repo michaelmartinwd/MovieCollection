@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MovieCollectionApplication.Services;
+﻿using MovieCollectionApplication.Services;
 using MovieCollectionEntities;
-using System.Reflection.Metadata.Ecma335;
 
 namespace MovieCollection.SeedData
 {

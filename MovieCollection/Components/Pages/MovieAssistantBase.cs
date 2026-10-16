@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MovieCollectionApplication.Interfaces;
-using MovieCollectionApplication.Services;
-using System.ComponentModel.DataAnnotations;
 
 namespace MovieCollection.Components.Pages
 {
@@ -23,9 +21,7 @@ namespace MovieCollection.Components.Pages
         public async Task AskQuestion()
         {
             if (string.IsNullOrWhiteSpace(Question))
-            {
                 return;
-            }
 
             try
             {

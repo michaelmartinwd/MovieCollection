@@ -36,15 +36,9 @@ namespace MovieCollection.Components.Pages
         {
             await base.OnInitializedAsync();
             ToastService.OnShow += ShowToastHandler;
-            await InitializeAsync();
-        }
-
-        private async Task InitializeAsync()
-        {
             await SearchMovies();
             CurrentUser = await UserService.GetUserAsync("TestUser");
             FavoriteMovies = CurrentUser?.FavoriteMovies ?? new List<MovieEntity>();
-            await InvokeAsync(StateHasChanged);
         }
 
         private void ShowToastHandler(string message)
