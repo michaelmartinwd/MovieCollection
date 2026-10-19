@@ -1,9 +1,11 @@
-﻿@* @inject ToastService ToastService
+﻿@using MovieCollectionApplication.Services
+@inject NavigationManager Navigation
+@inject ToastService ToastService
 @implements IDisposable
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div class="toast @(showToast ? "show" : "")">
-        <div class="toast-header">
+        <div class="toast-header bg-@ToastType text-white">
             <strong class="me-auto">Movie Collection</strong>
             <button type="button"
                     class="btn-close"
@@ -12,35 +14,74 @@
         </div>
 
         <div class="toast-body">
-            @toastMessage
+            @Message
+            @if (!string.IsNullOrEmpty(LinkUrl))
+            {
+                <a href="@LinkUrl" class="ms-2">
+                    @LinkText
+                </a>
+            }
         </div>
     </div>
 </div>
 
 @code {
     private bool showToast;
-    private string toastMessage = "";
+    private string Message = "";
+    private string? LinkUrl;
+    private string? LinkText;
+    private string ToastType = "success";
 
     protected override void OnInitialized()
     {
         ToastService.OnShow += ShowToast;
+        Navigation.LocationChanged += OnLocationChanged;
     }
 
-    private void ShowToast(string message)
+    private async void ShowToast(string message, string type, string? linkUrl, string? linkText)
     {
-        toastMessage = message;
-        showToast = true;
+        await InvokeAsync(async () =>
+          {
+              Message = message;
+              ToastType = type;
+              LinkUrl = linkUrl;
+              LinkText = linkText;
+              showToast = true;
 
-        InvokeAsync(StateHasChanged);
+              StateHasChanged();
+
+              await Task.Delay(5000);
+
+              showToast = false;
+              StateHasChanged();
+          });
     }
+
+    private string ToastTitle => ToastType switch
+    {
+        "success" => "Success",
+        "danger" => "Error",
+        "warning" => "Warning",
+        _ => "Information"
+    };
 
     private void HideToast()
     {
         showToast = false;
     }
 
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _ = InvokeAsync(() =>
+        {
+            showToast = false;
+            StateHasChanged();
+        });
+    }
+
     public void Dispose()
     {
         ToastService.OnShow -= ShowToast;
+        Navigation.LocationChanged -= OnLocationChanged;
     }
-} *@
+}

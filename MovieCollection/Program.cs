@@ -84,18 +84,12 @@ app.MapGet("/demo/start", async (
 
     var claims = new List<Claim>
     {
-        new Claim(
-            ClaimTypes.NameIdentifier,
-            user.Id.ToString())
+        new(ClaimTypes.NameIdentifier, user.Id.ToString())
     };
 
-    var identity = new ClaimsIdentity(
-        claims,
-        "DemoCookie");
+    var identity = new ClaimsIdentity(claims, "DemoCookie");
 
-    await http.SignInAsync(
-        "DemoCookie",
-        new ClaimsPrincipal(identity));
+    await http.SignInAsync("DemoCookie", new ClaimsPrincipal(identity));
 
     return Results.Redirect("/");
 });

@@ -1,6 +1,5 @@
 ﻿@page "/movieassistant"
 @inherits MovieAssistantBase
-@rendermode InteractiveServer
         
 <PageTitle>Movie Assistant</PageTitle>
 
@@ -12,20 +11,13 @@
         </div>
     </div>
 
-    <p class="text-muted">
-        Ask me anything about movies.
-    </p>
+    <p class="text-muted">Ask me anything about movies.</p>
 
     <div class="mb-3">
-        <InputText class="form-control"
-                   @bind-Value="Question"
-                   placeholder="Ask a movie question..." />
+        <InputText class="form-control" @bind-Value="Question" placeholder="Ask a movie question..." />
     </div>
 
-    <button class="btn btn-primary"
-            @onclick="AskQuestion"
-            disabled="@IsLoading">
-
+    <button class="btn btn-primary" @onclick="AskQuestion" disabled="@IsLoading">
         @if (IsLoading)
         {
             <span class="spinner-border spinner-border-sm me-2">
@@ -36,7 +28,6 @@
         {
             <span>Ask</span>
         }
-
     </button>
 
     <button class="btn btn-secondary" @onclick="ClearQuestion" disabled="@IsLoading">Clear</button>

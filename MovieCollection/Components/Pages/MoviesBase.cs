@@ -6,7 +6,7 @@ using MovieCollectionEntities;
 
 namespace MovieCollection.Components.Pages
 {
-    public partial class MoviesBase : ComponentBase, IDisposable
+    public partial class MoviesBase : ComponentBase
     {
         [Inject]
         private CurrentUserService CurrentUserService { get; set; } = null!;
@@ -21,30 +21,27 @@ namespace MovieCollection.Components.Pages
 
         public List<MovieSearchEntity> MovieSearchList { get; set; } = [];
         public MovieSearchEntity MovieSearch { get; set; } = new();
+        public UserEntity CurrentUser { get; set; } = new();
+        public HashSet<int> ExpandedMovies = [];
 
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
-        public string SearchTitle { get; set; } = string.Empty;
-        public UserEntity CurrentUser { get; set; } = new();
 
-        public bool ShowToast { get; set; }
-        public string ToastMessage { get; set; } = string.Empty;
+        public string SearchTitle { get; set; } = string.Empty;
 
         public ICollection<MovieEntity> FavoriteMovies { get; set; } = [];
 
-        public HashSet<int> ExpandedMovies = [];
+
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
 
-            ToastService.OnShow += ShowToastHandler;
-
             await SearchMovies();
 
             var currentUser = await CurrentUserService.GetCurrentUserAsync();
             CurrentUser = currentUser ?? new UserEntity();
-
+    
             if (CurrentUser is not null)
             { 
                 FavoriteMovies = CurrentUser.FavoriteMovies ?? new List<MovieEntity>();
@@ -53,23 +50,6 @@ namespace MovieCollection.Components.Pages
             {
                 FavoriteMovies = new List<MovieEntity>();
             }
-        }
-
-        private void ShowToastHandler(string message)
-        {
-            ToastMessage = message;
-            ShowToast = true;
-            InvokeAsync(StateHasChanged);
-        }
-
-        public void HideToast()
-        {
-            ShowToast = false;
-        }
-
-        public void Dispose()
-        {
-            ToastService.OnShow -= ShowToastHandler;
         }
 
         public async Task SearchMovies()
@@ -141,8 +121,9 @@ namespace MovieCollection.Components.Pages
 
             var user = await UserService.GetUserByIdAsync(CurrentUser.Id);
             CurrentUser = user!;
-            FavoriteMovies = CurrentUser?.FavoriteMovies!;
+            FavoriteMovies = CurrentUser?.FavoriteMovies ?? new List<MovieEntity>();
             await InvokeAsync(StateHasChanged);
+            ToastService.ShowSuccess("Movie added to favorites!", "/favoriteMovies", "View Favorites");
         }
 
         public void ToggleText(int movieId)

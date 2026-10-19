@@ -5,41 +5,33 @@ using MovieCollectionEntities;
 
 namespace MovieCollection.Components.Pages
 {
-    public partial class FavoriteMoviesBase : ComponentBase, IDisposable
+    public partial class FavoriteMoviesBase : ComponentBase
     {
         [Inject]
         private CurrentUserService CurrentUserService { get; set; } = null!;
         [Inject]
         private ToastService ToastService { get; set; } = null!;
         [Inject]
-        private IUserService UserService { get; set; } = null!;
-        [Inject]
         private IMovieCollectionService MovieService { get; set; } = null!;
 
-        public ICollection<MovieEntity> FavoriteMovies { get; set; } = new List<MovieEntity>();
         public List<MovieEntity> PagedMovies { get; set; } = [];
-
         public MovieEntity? SelectedMovie { get; set; }
+        public UserEntity CurrentUser { get; set; } = new();
+        public HashSet<int> ExpandedMovies = [];
 
         public bool ShowModal { get; set; }
-        public bool IsToastVisible { get; set; }
-        public string ToastMessage { get; set; } = string.Empty;
 
         public int CurrentPage { get; set; } = 1;
         public int PageSize { get; set; } = 12;
         public int TotalMovies { get; set; }
         public int TotalPages { get; set; }
-
-        public string SearchTitle { get; set; } = string.Empty;
         public int? SearchYear { get; set; }
 
-        public HashSet<int> ExpandedMovies = [];
-        public UserEntity CurrentUser { get; set; } = new();
+        public string SearchTitle { get; set; } = string.Empty;
+
 
         protected override async Task OnInitializedAsync()
         {
-            ToastService.OnShow += ShowToast;
-
             var currentUser = await CurrentUserService.GetCurrentUserAsync();
             CurrentUser = currentUser ?? new UserEntity();
 
@@ -59,18 +51,6 @@ namespace MovieCollection.Components.Pages
             PagedMovies = result.Items ?? new List<MovieEntity>();
             TotalMovies = result.Total;
             TotalPages = (int)Math.Ceiling(TotalMovies / (double)PageSize);
-        }
-
-        public void ShowToast(string message)
-        {
-            ToastMessage = message;
-            IsToastVisible = true;
-            InvokeAsync(StateHasChanged);
-        }
-
-        public void HideToast()
-        {
-            IsToastVisible = false;
         }
 
         public void OpenModal(MovieEntity movie)
@@ -94,6 +74,8 @@ namespace MovieCollection.Components.Pages
             await LoadPage(CurrentPage);
 
             CloseModal();
+
+            ToastService.ShowSuccess("Movie removed from favorites.");
         }
 
         public async Task ClearFavoriteMovieFilters()
@@ -118,11 +100,6 @@ namespace MovieCollection.Components.Pages
             {
                 ExpandedMovies.Remove(movieId);
             }
-        }
-
-        public void Dispose()
-        {
-            ToastService?.OnShow -= ShowToast;
         }
     }
 }

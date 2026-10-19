@@ -1,6 +1,5 @@
 ﻿@using MovieCollection.Components.Shared
 @inherits FavoriteMoviesBase
-@rendermode InteractiveServer
 
 @page "/favoritemovies"
 
@@ -17,29 +16,17 @@
             <div class="row g-3 align-items-end">
                 <div class="col-lg-5 col-md-6 col-sm-12">
                     <label class="form-label">Search by Title:</label>
-                    <InputText class="form-control"
-                               @bind-Value="SearchTitle" />
+                    <InputText class="form-control" @bind-Value="SearchTitle" />
                 </div>
-
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <label class="form-label">Search by Year:</label>
-                    <InputNumber class="form-control"
-                                 @bind-Value="SearchYear" />
-                </div>
-
-                <div class="d-grid gap-2 col-lg-2 col-sm-12 mx-auto">
-                    <button type="button"
-                            class="btn btn-primary"
-                            @onclick="() => LoadPage(1)">
-                        Filter Movies
-                    </button>
+                    <InputNumber class="form-control" @bind-Value="SearchYear" />
                 </div>
                 <div class="d-grid gap-2 col-lg-2 col-sm-12 mx-auto">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            @onclick="ClearFavoriteMovieFilters">
-                        Clear Filters
-                    </button>
+                    <button type="button" class="btn btn-primary" @onclick="() => LoadPage(1)">Filter Movies</button>
+                </div>
+                <div class="d-grid gap-2 col-lg-2 col-sm-12 mx-auto">
+                    <button type="button" class="btn btn-secondary" @onclick="ClearFavoriteMovieFilters">Clear Filters</button>
                 </div>
             </div>
         </div>
@@ -47,14 +34,14 @@
 
     <div class="py-5">
         <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-3">
-           
+
             @if (PagedMovies is not null && PagedMovies.Count > 0)
             {
-               <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
+                <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
 
                 @foreach (var movie in PagedMovies)
                 {
-                    <div class="col-lg-4">    
+                    <div class="col-lg-4">
                         <div class="card w-100 h-100">
                             <div class="card-body d-flex flex-column">
                                 <div class="row mb-2">
@@ -65,7 +52,6 @@
                                         <div class="btn-group">
                                             <i role="button" class="bi bi-x-circle-fill text-danger" style="font-size: 1.25rem;" @onclick="() => OpenModal(movie)" title="Remove from Favorites"></i>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="row">
@@ -74,13 +60,13 @@
                                             @(ExpandedMovies.Contains(movie.ExternalId) || movie.Overview.Length <= 150
                                                 ? movie.Overview
                                                 : movie.Overview[..150] + "...")
-                                             @if (movie.Overview.Length > 150)
+                                            @if (movie.Overview.Length > 150)
                                             {
                                                 <span class="btn btn-link"
-                                                @onclick="() => ToggleText(movie.ExternalId)">
+                                                      @onclick="() => ToggleText(movie.ExternalId)">
                                                     @if (ExpandedMovies.Contains(movie.ExternalId))
                                                     {
-                                                        <i class='bi bi-dash-circle' title="View Less"></i>                                                  
+                                                        <i class='bi bi-dash-circle' title="View Less"></i>
                                                     }
                                                     else
                                                     {
@@ -88,8 +74,7 @@
                                                     }
                                                 </span>
                                             }
-                                         </p>
-
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -125,21 +110,4 @@
 
     </div>
 
-</div>
-
-                                            
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div class="toast @(IsToastVisible ? "show" : "")">
-        <div class="toast-header">
-            <strong class="me-auto">Movie Collection</strong>
-            <button type="button"
-                    class="btn-close"
-                    @onclick="HideToast">
-            </button>
-        </div>
-
-        <div class="toast-body">
-            @(ToastMessage ?? "")
-        </div>
-    </div>
-</div>
+</div>                                         

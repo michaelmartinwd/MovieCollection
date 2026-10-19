@@ -1,7 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
 @using MovieCollection.Components.Shared
 @inherits MoviesBase
-@rendermode InteractiveServer
 
 @page "/movies"
 
@@ -9,7 +8,6 @@
     <div class="row py-lg-5">
         <div class="col-lg-5 col-md-8 mx-auto">
             <h1 class="fw-light">Search for Movies</h1>
-
             <EditForm Model="@MovieSearch" OnValidSubmit="SearchMovies" FormName="MovieSearchForm">
                 <div class="input-group">
                     <InputText @bind-Value="@MovieSearch.Title" class="form-control" />
@@ -17,7 +15,6 @@
                 </div>
             </EditForm>
         </div>
-
     </div>
 </section>
 
@@ -28,7 +25,7 @@
         @if (MovieSearchList is not null && MovieSearchList.Count > 0)
         {
             <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
-   
+
             @foreach (var movie in MovieSearchList)
             {
                 <div class="col-lg-4">
@@ -47,37 +44,29 @@
                                                   @onclick="() => ToggleText(movie.Id)">
                                                 @if (ExpandedMovies.Contains(movie.Id))
                                                 {
-                                                    <i class='bi bi-dash-circle' title="View Less"></i>                                                  
+                                                    <i class='bi bi-dash-circle' title="View Less"></i>
                                                 }
                                                 else
                                                 {
-                                                     <i class='bi bi-plus-circle' title="View More"></i>
+                                                    <i class='bi bi-plus-circle' title="View More"></i>
                                                 }
-                                          </span>
+                                            </span>
                                         }
                                     </p>
-
                                 </div>
                             </div>
                             <div class="mt-auto">
                                 <div class="btn-group">
-                                    @if(FavoriteMovies != null && FavoriteMovies.Any(fav => fav.ExternalId == movie.Id))
+                                    @if (FavoriteMovies != null && FavoriteMovies.Any(fav => fav.ExternalId == movie.Id))
                                     {
-                                        <button disabled type="button"
-                                                class="btn btn-secondary">
-                                            Marked as Favorite
-                                        </button>
+                                        <button disabled type="button" class="btn btn-secondary">Marked as Favorite</button>
                                     }
                                     else
                                     {
-                                        <button type="button"
-                                                class="btn btn-primary"
-                                                @onclick="() => AddFavoriteMovieToUser(movie)">
-                                            Add to Favorites
-                                        </button>
+                                        <button type="button" class="btn btn-primary" @onclick="() => AddFavoriteMovieToUser(movie)"> Add to Favorites</button>
                                     }
                                 </div>
-                          </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -86,23 +75,7 @@
             <Pagination CurrentPage="@CurrentPage" SearchTitle="@SearchTitle" TotalPages="@TotalPages" PageChanged="LoadPage" />
 
         }
-         
+
     </div>
 
-</div>
-
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div class="toast @(ShowToast ? "show" : "")">
-        <div class="toast-header">
-            <strong class="me-auto">Movie Collection</strong>
-            <button type="button"
-                    class="btn-close"
-                    @onclick="HideToast">
-            </button>
-        </div>
-
-        <div class="toast-body">
-            @ToastMessage  <a class="btn btn-primary" href="/favoriteMovies">View My Favorite Movies</a>
-        </div>
-    </div>
 </div>
