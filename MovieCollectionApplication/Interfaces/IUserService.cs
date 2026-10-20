@@ -9,5 +9,6 @@ namespace MovieCollectionApplication.Interfaces
         Task UpdateUser(UserEntity user);
         Task<UserEntity?> GetUserByIdAsync(Guid userId);
         Task<UserEntity> CreateDemoUserAsync();
+        Task DeleteExpiredDemoUsersAsync();
     }
 }

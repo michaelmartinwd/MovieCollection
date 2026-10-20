@@ -15,7 +15,7 @@ namespace MovieCollectionApplication.Services
 
         public async Task<UserEntity> AddUserAsync(UserEntity user)
         {
-            var userEntity = new UserEntity(user.Id, user.Username);
+            var userEntity = new UserEntity(user.Id, user.Username, user.DateCreated);
             var newUser = await _repo.AddUser(userEntity);
             return newUser;
         }
@@ -42,10 +42,16 @@ namespace MovieCollectionApplication.Services
             var newUser = new UserEntity
             {
                 Id = userId,
-                Username = $"Demo-{userId:N}"
+                Username = $"Demo-{userId:N}",
+                DateCreated = DateTime.UtcNow,
             };
 
             return await AddUserAsync(newUser);
+        }
+
+        public async Task DeleteExpiredDemoUsersAsync()
+        {
+            await _repo.DeleteExpiredDemoUsersAsync();
         }
     }
 }

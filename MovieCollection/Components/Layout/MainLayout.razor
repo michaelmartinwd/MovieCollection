@@ -4,6 +4,7 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject CurrentUserService CurrentUserService
 @inject UserService UserService
+@inject IJSRuntime JS
 @inherits LayoutComponentBase
 
 <!-- Favicons -->
@@ -41,7 +42,7 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="/">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/movies">Search for Movies</a>
@@ -81,6 +82,8 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
+        Navigation.LocationChanged += OnLocationChanged;
+
         var authState =
             await AuthStateProvider.GetAuthenticationStateAsync();
 
@@ -90,4 +93,24 @@
             return;
         }
     }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        await JS.InvokeVoidAsync("closeOffcanvas");
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
 }
+
+<script type="text/javascript">
+    window.closeOffcanvas = () => {
+        const element = document.getElementById("offcanvasDarkNavbar");
+
+        if (element) {
+            bootstrap.Offcanvas.getInstance(element)?.hide();
+        }
+    };
+</script>

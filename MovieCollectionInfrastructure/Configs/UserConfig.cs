@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MovieCollectionEntities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MovieCollectionInfrastructure.Configs
 {
@@ -15,6 +12,7 @@ namespace MovieCollectionInfrastructure.Configs
 
             builder.HasKey(x => x.Id);
             builder.Property(e => e.Id).ValueGeneratedNever();
+            builder.Property(e => e.DateCreated);
 
             builder.HasMany(u => u.FavoriteMovies)
                 .WithMany(u => u.Users)

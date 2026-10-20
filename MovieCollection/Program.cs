@@ -37,8 +37,8 @@ builder.Services
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
 
-        options.ExpireTimeSpan = TimeSpan.FromDays(30);
-        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(24);
+        options.SlidingExpiration = false;
     });
 
 builder.Services.AddAuthorization();
@@ -50,7 +50,19 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<MovieCollectionDbContext>();
     dbContext.Database.Migrate();
+
     //await Seed.Initialize(scope);
+
+    // Delete expired demo users
+    try
+    {
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        await userService.DeleteExpiredDemoUsersAsync();
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "An error occurred while deleting expired demo users.");
+    }
 }
 
 if (!app.Environment.IsDevelopment())

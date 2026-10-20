@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using MovieCollectionEntities;
 using MovieCollectionInfrastructure.Interfaces;
 
@@ -178,6 +179,21 @@ namespace MovieCollectionInfrastructure.Repository
                 .Where(u => u.Id == userId)
                 .SelectMany(u => u.FavoriteMovies)
                 .CountAsync();
+        }
+
+        public async Task DeleteExpiredDemoUsersAsync()
+        {
+            await using var context = await _repo.CreateDbContextAsync();
+
+            var expirationDate = DateTime.UtcNow.AddDays(-2);
+
+            var expiredUsers = await context.Users
+                .Where(u => u.DateCreated < expirationDate)
+                .ToListAsync();
+
+            context.Users.RemoveRange(expiredUsers);
+
+            await context.SaveChangesAsync();
         }
     }
 }

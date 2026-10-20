@@ -24,5 +24,6 @@ namespace MovieCollectionInfrastructure.Interfaces
 
         Task<PagedResult<MovieEntity>> GetFavoriteMoviesAsync(Guid userId, string? title, int? year, int page, int pageSize);
         Task<int> GetFavoriteMovieCountAsync(Guid userId);
+        Task DeleteExpiredDemoUsersAsync();
     }
 }
