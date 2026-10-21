@@ -33,4 +33,6 @@ Tech stack:
 
 DEMO: https://moviecollection-ibp3.onrender.com (please allow up to a minute for loading the site, its on a free account)
 
+*Demo sessions are temporary. Your session expires after 24 hours, and your saved favorites may be removed afterward.
+
 
