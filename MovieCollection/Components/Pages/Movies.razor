@@ -10,7 +10,7 @@
             <h1 class="fw-light">Search for Movies</h1>
             <EditForm Model="@MovieSearch" OnValidSubmit="SearchMovies" FormName="MovieSearchForm">
                 <div class="input-group">
-                    <InputText @bind-Value="@MovieSearch.Title" class="form-control" />
+                    <InputText @bind-Value="@MovieSearch.Title" class="form-control" autocomplete="off" />
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </EditForm>

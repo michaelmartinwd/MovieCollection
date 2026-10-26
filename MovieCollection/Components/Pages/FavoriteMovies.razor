@@ -16,11 +16,11 @@
             <div class="row g-3 align-items-end">
                 <div class="col-lg-5 col-md-6 col-sm-12">
                     <label class="form-label">Search by Title:</label>
-                    <InputText class="form-control" @bind-Value="SearchTitle" />
+                    <InputText class="form-control" @bind-Value="SearchTitle" autocomplete="off" />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12">
                     <label class="form-label">Search by Year:</label>
-                    <InputNumber class="form-control" @bind-Value="SearchYear" />
+                    <InputNumber class="form-control" @bind-Value="SearchYear" autocomplete="off" />
                 </div>
                 <div class="d-grid gap-2 col-lg-2 col-sm-12 mx-auto">
                     <button type="button" class="btn btn-primary" @onclick="() => LoadPage(1)">Filter Movies</button>

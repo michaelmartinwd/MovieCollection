@@ -14,7 +14,7 @@
     <p class="text-muted">Ask me anything about movies.</p>
 
     <div class="mb-3">
-        <InputText class="form-control" @bind-Value="Question" placeholder="Ask a movie question..." />
+        <InputText class="form-control" @bind-Value="Question" placeholder="Ask a movie question..." autocomplete="off" />
     </div>
 
     <button class="btn btn-primary" @onclick="AskQuestion" disabled="@IsLoading">
